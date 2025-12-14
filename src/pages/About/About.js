@@ -71,15 +71,11 @@ const About = () => {
               </p>
               <div className="about-description">
                 <p>
-                  With over 5 years of experience in photography and videography, I specialize in 
-                  creating compelling visual narratives that resonate with audiences. My work spans 
-                  across weddings, portraits, corporate events, and creative projects.
-                </p>
-                <p>
-                  I believe that every moment has a story to tell, and my mission is to capture 
-                  those stories in their most authentic and beautiful form. Whether it's the joy 
-                  of a wedding day, the professionalism of a corporate event, or the intimacy 
-                  of a portrait session, I bring creativity and technical expertise to every project.
+               Five years deep in the game, my visual language was forged in the streets with the Broke Boys Collective. That era taught me that you don’t need a budget to create art—you need vision, timing, and the hunger to capture the shot that everyone else misses.
+
+Today, I bring that same indie energy and technical mastery to every project. Whether I'm documenting the raw emotion of a wedding, the fast-paced rhythm of a corporate event, or a stylized portrait session, I don’t just record what it looks like—I capture what it feels like.
+
+I specialize in visual narratives that bleed authenticity. My work sits at the intersection of technical precision and street-level edge. If you are looking for traditional, posed perfection, look elsewhere. If you want the story told with grit, texture, and soul, let’s work.
                 </p>
               </div>
             </div>
