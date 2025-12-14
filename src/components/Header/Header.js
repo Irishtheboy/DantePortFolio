@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Camera } from 'lucide-react';
+import { Menu, X, Camera, Moon, Sun } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
+import { useTheme } from '../../contexts/ThemeContext';
 import './Header.css';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [logoUrl, setLogoUrl] = useState(null);
+  const { isDark, toggleTheme } = useTheme();
   const location = useLocation();
 
   useEffect(() => {
@@ -66,6 +68,9 @@ const Header = () => {
               {item.label}
             </Link>
           ))}
+          <button className="theme-toggle" onClick={toggleTheme}>
+            {isDark ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
         </nav>
 
         <button 

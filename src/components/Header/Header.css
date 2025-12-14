@@ -50,6 +50,24 @@
   object-fit: contain;
 }
 
+.theme-toggle {
+  background: none;
+  border: 1px solid #e0e0e0;
+  color: var(--color-black);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background: var(--color-mustard);
+  border-color: var(--color-mustard);
+}
+
 .nav {
   display: flex;
   gap: 30px;
