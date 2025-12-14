@@ -37,16 +37,17 @@
 }
 
 .logo {
-  background: var(--color-black);
-  color: #fff;
   padding: 10px 20px;
-  font-weight: 700;
-  font-family: var(--font-serif);
-  letter-spacing: 1px;
   text-decoration: none;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.logo-image {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
 }
 
 .nav {

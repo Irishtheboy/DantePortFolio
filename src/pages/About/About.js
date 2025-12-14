@@ -148,9 +148,7 @@ I specialize in visual narratives that bleed authenticity. My work sits at the i
           <div className="philosophy-content glass">
             <h2>My Philosophy</h2>
             <blockquote>
-              "Photography is not just about capturing what you see, but about revealing 
-              what you feel. Every frame tells a story, every moment holds emotion, 
-              and every project is an opportunity to create something extraordinary."
+              "I believe the best images should feel lived-in, not staged. For me, the magic isn't in perfect poses, but in the texture of the moment—the grain, the shadows, and the unscripted energy. I don’t force the shot; I wait for the split-second when the vibe is authentic and the real story unfolds. It’s about creating visuals that don't just look good, but actually breathe."
             </blockquote>
             <cite>- DANTEKILLSTORM</cite>
           </div>

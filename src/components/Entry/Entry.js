@@ -8,7 +8,9 @@ import './Entry.css';
 
 const Entry = () => {
   const [stats, setStats] = useState({ projects: 0, videos: 0, experience: 5 });
-  const [heroImage, setHeroImage] = useState('https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&h=800&fit=crop');
+  const [heroImage, setHeroImage] = useState(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [dataLoaded, setDataLoaded] = useState(false);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -28,14 +30,24 @@ const Entry = () => {
         if (!heroSnap.empty) {
           const heroData = heroSnap.docs[0].data();
           setHeroImage(heroData.imageUrl);
+        } else {
+          setHeroImage('https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&h=800&fit=crop');
         }
+        
+        setDataLoaded(true);
       } catch (error) {
         console.error('Error fetching stats:', error);
+        setHeroImage('https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&h=800&fit=crop');
+        setDataLoaded(true);
       }
     };
     
     fetchStats();
   }, []);
+
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
 
   return (
     <div className="entry-page">
@@ -92,11 +104,20 @@ const Entry = () => {
         transition={{ duration: 0.8, delay: 0.2 }}
       >
         <div className="visual-container">
-          <img 
-            src={heroImage} 
-            alt="DANTEKILLSTORM Photography" 
-            className="entry-image"
-          />
+          {!imageLoaded && (
+            <div className="image-loading">
+              <div className="loading-spinner"></div>
+            </div>
+          )}
+          {heroImage && (
+            <img 
+              src={heroImage} 
+              alt="DANTEKILLSTORM Photography" 
+              className={`entry-image ${imageLoaded ? 'loaded' : ''}`}
+              onLoad={handleImageLoad}
+              style={{ opacity: imageLoaded ? 1 : 0 }}
+            />
+          )}
           <div className="visual-overlay"></div>
         </div>
       </motion.div>

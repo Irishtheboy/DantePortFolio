@@ -7,7 +7,8 @@ import './Hero.css';
 
 const Hero = () => {
   const [stats, setStats] = useState({ projects: 0, videos: 0, experience: 5 });
-  const [heroImage, setHeroImage] = useState('https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800');
+  const [heroImage, setHeroImage] = useState(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -27,9 +28,12 @@ const Hero = () => {
         if (!heroSnap.empty) {
           const heroData = heroSnap.docs[0].data();
           setHeroImage(heroData.imageUrl);
+        } else {
+          setHeroImage('https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800');
         }
       } catch (error) {
         console.error('Error fetching stats:', error);
+        setHeroImage('https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800');
       }
     };
     
@@ -38,6 +42,10 @@ const Hero = () => {
 
   const scrollToPortfolio = () => {
     document.getElementById('portfolio-section')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleImageLoad = () => {
+    setImageLoaded(true);
   };
 
   return (
@@ -89,11 +97,20 @@ const Hero = () => {
       >
         <div className="pattern-dots hero-dots-bg"></div>
         <div className="deco-yellow-block"></div>
-        <img 
-          src={heroImage} 
-          alt="DANTEKILLSTORM Photography" 
-          className="main-img"
-        />
+        {!imageLoaded && (
+          <div className="hero-image-loading">
+            <div className="loading-spinner"></div>
+          </div>
+        )}
+        {heroImage && (
+          <img 
+            src={heroImage} 
+            alt="DANTEKILLSTORM Photography" 
+            className={`main-img ${imageLoaded ? 'loaded' : ''}`}
+            onLoad={handleImageLoad}
+            style={{ opacity: imageLoaded ? 1 : 0 }}
+          />
+        )}
         <div className="deco-black-rect"></div>
       </motion.div>
     </section>

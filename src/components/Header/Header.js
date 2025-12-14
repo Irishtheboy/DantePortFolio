@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Camera } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase';
 import './Header.css';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [logoUrl, setLogoUrl] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -15,6 +18,22 @@ const Header = () => {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const logoSnap = await getDocs(collection(db, 'logo'));
+        if (!logoSnap.empty) {
+          const logoData = logoSnap.docs[0].data();
+          setLogoUrl(logoData.logoUrl);
+        }
+      } catch (error) {
+        console.error('Error fetching logo:', error);
+      }
+    };
+    
+    fetchLogo();
   }, []);
 
   const navItems = [
@@ -33,8 +52,7 @@ const Header = () => {
     >
       <div className="header-container">
         <Link to="/" className="logo">
-          <Camera size={28} />
-          <span className="gradient-text">DANTEKILLSTORM</span>
+          <img src={`${process.env.PUBLIC_URL}/logo.png`} alt="DANTEKILLSTORM" className="logo-image" />
         </Link>
 
         <nav className={`nav ${isOpen ? 'nav-open' : ''}`}>

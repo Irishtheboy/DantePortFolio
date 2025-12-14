@@ -49,6 +49,25 @@
   z-index: 2;
   filter: contrast(1.1);
   border-radius: 8px;
+  transition: opacity 0.5s ease;
+}
+
+.main-img.loaded {
+  opacity: 1;
+}
+
+.hero-image-loading {
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  width: 80%;
+  height: 85%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9fa;
+  border-radius: 8px;
+  z-index: 2;
 }
 
 .hero-dots-bg {

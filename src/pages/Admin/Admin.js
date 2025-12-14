@@ -312,6 +312,13 @@ const Admin = () => {
             <Image size={20} />
             About Image
           </button>
+          <button
+            className={`tab-btn ${activeTab === 'logo' ? 'active' : ''}`}
+            onClick={() => setActiveTab('logo')}
+          >
+            <Image size={20} />
+            Logo
+          </button>
         </div>
 
         <motion.div
@@ -802,6 +809,58 @@ const Admin = () => {
                   <>
                     <Upload size={16} />
                     Update About Image
+                  </>
+                )}
+              </button>
+            </form>
+          )}
+
+          {activeTab === 'logo' && (
+            <form className="upload-form glass" onSubmit={async (e) => {
+              e.preventDefault();
+              if (!formData.file) return;
+              
+              setUploading(true);
+              try {
+                const logoUrl = await uploadToCloudinary(formData.file);
+                
+                const logoCollection = collection(db, 'logo');
+                const logoSnap = await getDocs(logoCollection);
+                
+                if (logoSnap.empty) {
+                  await addDoc(logoCollection, { logoUrl });
+                } else {
+                  const logoDoc = logoSnap.docs[0];
+                  await updateDoc(doc(db, 'logo', logoDoc.id), { logoUrl });
+                }
+                
+                alert('Logo updated successfully!');
+                setFormData({ title: '', description: '', category: '', file: null, videoUrl: '', price: '', originalPrice: '', presetCount: '' });
+              } catch (error) {
+                alert('Error updating logo.');
+              } finally {
+                setUploading(false);
+              }
+            }}>
+              <h2>Update Logo</h2>
+              
+              <div className="form-group">
+                <label>Logo Image (PNG recommended)</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  required
+                />
+              </div>
+
+              <button type="submit" className="btn-primary" disabled={uploading}>
+                {uploading ? (
+                  <div className="loading-spinner small"></div>
+                ) : (
+                  <>
+                    <Upload size={16} />
+                    Update Logo
                   </>
                 )}
               </button>
