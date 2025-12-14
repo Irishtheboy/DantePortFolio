@@ -41,12 +41,78 @@
   margin: 0 auto;
 }
 
+.gallery-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  align-items: center;
+}
+
+.search-bar {
+  position: relative;
+  max-width: 400px;
+  width: 100%;
+}
+
+.search-bar svg {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-gray);
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 50px;
+  font-size: 1rem;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.search-bar input:focus {
+  outline: none;
+  border-color: var(--color-mustard);
+  box-shadow: 0 0 0 3px rgba(255, 194, 14, 0.1);
+}
+
 .gallery-filters {
   display: flex;
   justify-content: center;
   gap: 1rem;
-  margin-bottom: 3rem;
   flex-wrap: wrap;
+}
+
+.view-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.view-controls select {
+  padding: 0.5rem 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  font-size: 0.9rem;
+}
+
+.view-btn {
+  background: transparent;
+  border: 1px solid #e0e0e0;
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.view-btn.active,
+.view-btn:hover {
+  background: var(--color-mustard);
+  border-color: var(--color-mustard);
 }
 
 .filter-btn {
@@ -73,6 +139,34 @@
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   position: relative;
+}
+
+.gallery-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.gallery-list .gallery-item {
+  display: flex;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.gallery-list .image-container {
+  width: 200px;
+  height: 150px;
+  flex-shrink: 0;
+}
+
+.gallery-list .image-info {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .gallery-item {
@@ -127,6 +221,39 @@
   padding: 1.5rem;
   opacity: 0;
   transition: opacity 0.3s ease;
+}
+
+.image-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.action-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 0.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.action-btn.favorited {
+  background: rgba(255, 107, 53, 0.8);
+  color: white;
+}
+
+.action-btn.delete-btn {
+  background: rgba(255, 0, 0, 0.8);
 }
 
 .delete-btn {
@@ -193,6 +320,82 @@
   position: relative;
   max-width: 90vw;
   max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.lightbox-info {
+  padding: 1.5rem;
+  background: white;
+}
+
+.lightbox-info h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--color-black);
+}
+
+.lightbox-info p {
+  color: var(--color-text-gray);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.lightbox-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.lightbox-actions button,
+.lightbox-actions a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--color-mustard);
+  color: var(--color-black);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lightbox-actions button:hover,
+.lightbox-actions a:hover {
+  background: #e6b800;
+  transform: translateY(-2px);
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: white;
+  font-size: 2rem;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lightbox-nav:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.lightbox-nav.prev {
+  left: 1rem;
+}
+
+.lightbox-nav.next {
+  right: 1rem;
 }
 
 .lightbox-content img {

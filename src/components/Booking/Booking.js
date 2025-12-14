@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { MapPin, Camera, Video, Clock } from 'lucide-react';
+import { detectUserCurrency, formatPrice } from '../../utils/currency';
 import './Booking.css';
 
 const Booking = () => {
@@ -16,13 +17,18 @@ const Booking = () => {
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [userCurrency, setUserCurrency] = useState('USD');
+
+  useEffect(() => {
+    setUserCurrency(detectUserCurrency());
+  }, []);
 
   const services = [
-    { id: 'portrait', name: 'Portrait Photography', price: 'R1,500', duration: '2 hours', icon: Camera },
-    { id: 'wedding', name: 'Wedding Photography', price: 'R8,000', duration: 'Full day', icon: Camera },
-    { id: 'event', name: 'Event Photography', price: 'R3,500', duration: '4 hours', icon: Camera },
-    { id: 'video-shoot', name: 'Video Production', price: 'R5,000', duration: '6 hours', icon: Video },
-    { id: 'video-edit', name: 'Video Editing Only', price: 'R2,000', duration: '3-5 days', icon: Video }
+    { id: 'portrait', name: 'Portrait Photography', price: 81, duration: '2 hours', icon: Camera },
+    { id: 'wedding', name: 'Wedding Photography', price: 432, duration: 'Full day', icon: Camera },
+    { id: 'event', name: 'Event Photography', price: 189, duration: '4 hours', icon: Camera },
+    { id: 'video-shoot', name: 'Video Production', price: 270, duration: '6 hours', icon: Video },
+    { id: 'video-edit', name: 'Video Editing Only', price: 108, duration: '3-5 days', icon: Video }
   ];
 
   const locations = [
@@ -53,7 +59,7 @@ const Booking = () => {
       await addDoc(collection(db, 'bookings'), {
         ...formData,
         serviceName: selectedService?.name,
-        servicePrice: selectedService?.price,
+        servicePrice: formatPrice(selectedService?.price, userCurrency),
         createdAt: serverTimestamp(),
         status: 'pending'
       });
@@ -103,7 +109,7 @@ const Booking = () => {
                 <div key={service.id} className="service-card glass">
                   <service.icon size={24} className="service-icon" />
                   <h4>{service.name}</h4>
-                  <div className="service-price">{service.price}</div>
+                  <div className="service-price">{formatPrice(service.price, userCurrency)}</div>
                   <div className="service-duration">
                     <Clock size={14} />
                     {service.duration}
@@ -169,7 +175,7 @@ const Booking = () => {
                     <option value="">Select Service</option>
                     {services.map(service => (
                       <option key={service.id} value={service.id}>
-                        {service.name} - {service.price}
+                        {service.name} - {formatPrice(service.price, userCurrency)}
                       </option>
                     ))}
                   </select>

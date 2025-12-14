@@ -346,6 +346,21 @@
   transform: scale(1.1);
 }
 
+.item-price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-mustard);
+  margin-top: 0.5rem;
+}
+
+.form-group small {
+  display: block;
+  color: var(--color-text-gray);
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
 @media (max-width: 768px) {
   .admin {
     padding: 6rem 0 2rem;

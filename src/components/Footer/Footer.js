@@ -40,7 +40,10 @@ const Footer = () => {
         
         <div className="footer-bottom">
           <p>
-            © 2024 DANTEKILLSTORM. Made with <Heart size={16} fill="#ff6b35" color="#ff6b35" /> for visual storytelling.
+            © 2026 DANTEKILLSTORM. Made with <Heart size={16} fill="#ff6b35" color="#ff6b35" /> for visual storytelling.
+          </p>
+          <p className="developer-credit">
+            Website developed by <strong>Franco Lukhele</strong> at <strong>AlchemyStudio</strong>
           </p>
         </div>
       </div>

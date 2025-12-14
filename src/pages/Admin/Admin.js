@@ -4,7 +4,7 @@ import { collection, addDoc, serverTimestamp, getDocs, orderBy, query, deleteDoc
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { db, auth, storage } from '../../firebase';
-import { Upload, Image, Video, Plus, LogOut, Mail, Calendar, Trash2 } from 'lucide-react';
+import { Upload, Image, Video, Plus, LogOut, Mail, Calendar, Trash2, Package } from 'lucide-react';
 import Login from '../../components/Login/Login';
 import './Admin.css';
 
@@ -30,12 +30,16 @@ const Admin = () => {
   const [bookings, setBookings] = useState([]);
   const [galleryItems, setGalleryItems] = useState([]);
   const [videoItems, setVideoItems] = useState([]);
+  const [presetItems, setPresetItems] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     category: '',
     file: null,
-    videoUrl: ''
+    videoUrl: '',
+    price: '',
+    originalPrice: '',
+    presetCount: ''
   });
 
   useEffect(() => {
@@ -47,6 +51,8 @@ const Admin = () => {
       fetchGalleryItems();
     } else if (activeTab === 'videos') {
       fetchVideoItems();
+    } else if (activeTab === 'presets') {
+      fetchPresetItems();
     }
   }, [activeTab]);
 
@@ -75,6 +81,20 @@ const Admin = () => {
       setVideoItems(videoData);
     } catch (error) {
       console.error('Error fetching video items:', error);
+    }
+  };
+
+  const fetchPresetItems = async () => {
+    try {
+      const q = query(collection(db, 'presets'), orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const presetData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setPresetItems(presetData);
+    } catch (error) {
+      console.error('Error fetching preset items:', error);
     }
   };
 
@@ -152,7 +172,7 @@ const Admin = () => {
       });
 
       alert('Image uploaded successfully!');
-      setFormData({ title: '', description: '', category: '', file: null });
+      setFormData({ title: '', description: '', category: '', file: null, videoUrl: '', price: '', originalPrice: '', presetCount: '' });
       fetchGalleryItems();
     } catch (error) {
       console.error('Error uploading image:', error);
@@ -189,11 +209,47 @@ const Admin = () => {
       });
 
       alert('Video added successfully!');
-      setFormData({ title: '', description: '', category: '', file: null, videoUrl: '' });
+      setFormData({ title: '', description: '', category: '', file: null, videoUrl: '', price: '', originalPrice: '', presetCount: '' });
       fetchVideoItems();
     } catch (error) {
       console.error('Error adding video:', error);
       alert('Error adding video. Please try again.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const uploadPreset = async (e) => {
+    e.preventDefault();
+    if (!formData.file || !formData.title || !formData.price) return;
+
+    setUploading(true);
+    try {
+      const fileRef = ref(storage, `presets/${Date.now()}_${formData.file.name}`);
+      const snapshot = await uploadBytes(fileRef, formData.file);
+      const fileUrl = await getDownloadURL(snapshot.ref);
+
+      await addDoc(collection(db, 'presets'), {
+        title: formData.title,
+        description: formData.description,
+        category: formData.category,
+        price: parseFloat(formData.price),
+        originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : parseFloat(formData.price),
+        presetCount: parseInt(formData.presetCount) || 1,
+        fileUrl: fileUrl,
+        preview: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
+        rating: 5.0,
+        downloads: 0,
+        fileSize: '2.5 MB',
+        createdAt: serverTimestamp()
+      });
+
+      alert('Preset added successfully!');
+      setFormData({ title: '', description: '', category: '', file: null, videoUrl: '', price: '', originalPrice: '', presetCount: '' });
+      fetchPresetItems();
+    } catch (error) {
+      console.error('Error adding preset:', error);
+      alert('Error adding preset. Please try again.');
     } finally {
       setUploading(false);
     }
@@ -241,6 +297,13 @@ const Admin = () => {
           >
             <Mail size={20} />
             Messages
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'presets' ? 'active' : ''}`}
+            onClick={() => setActiveTab('presets')}
+          >
+            <Package size={20} />
+            Presets
           </button>
           <button
             className={`tab-btn ${activeTab === 'bookings' ? 'active' : ''}`}
@@ -441,6 +504,135 @@ const Admin = () => {
                           if (window.confirm('Delete this video?')) {
                             await deleteDoc(doc(db, 'videos', item.id));
                             fetchVideoItems();
+                          }
+                        }}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
+          {activeTab === 'presets' && (
+            <>
+              <form className="upload-form glass" onSubmit={uploadPreset}>
+                <h2>Add New Preset Pack</h2>
+                
+                <div className="form-group">
+                  <label>Title</label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Description</label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    rows="3"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Category</label>
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="">Select Category</option>
+                    <option value="Portrait">Portrait</option>
+                    <option value="Wedding">Wedding</option>
+                    <option value="Street">Street</option>
+                    <option value="Landscape">Landscape</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Price (USD Base)</label>
+                  <input
+                    type="number"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleInputChange}
+                    step="0.01"
+                    required
+                  />
+                  <small>Enter price in USD - will auto-convert for users</small>
+                </div>
+
+                <div className="form-group">
+                  <label>Original Price (USD) - Optional</label>
+                  <input
+                    type="number"
+                    name="originalPrice"
+                    value={formData.originalPrice}
+                    onChange={handleInputChange}
+                    step="0.01"
+                  />
+                  <small>For discount display</small>
+                </div>
+
+                <div className="form-group">
+                  <label>Number of Presets</label>
+                  <input
+                    type="number"
+                    name="presetCount"
+                    value={formData.presetCount}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Preset File (.zip)</label>
+                  <input
+                    type="file"
+                    accept=".zip"
+                    onChange={handleFileChange}
+                    required
+                  />
+                </div>
+
+                <button type="submit" className="btn-primary" disabled={uploading}>
+                  {uploading ? (
+                    <div className="loading-spinner small"></div>
+                  ) : (
+                    <>
+                      <Plus size={16} />
+                      Add Preset Pack
+                    </>
+                  )}
+                </button>
+              </form>
+              
+              <div className="content-list">
+                <h3>Preset Packs ({presetItems.length})</h3>
+                <div className="items-grid">
+                  {presetItems.map(item => (
+                    <div key={item.id} className="item-card">
+                      <img src={item.preview || 'https://via.placeholder.com/300x200'} alt={item.title} />
+                      <div className="item-info">
+                        <h4>{item.title}</h4>
+                        <span className="item-category">{item.category}</span>
+                        <div className="item-price">${item.price}</div>
+                      </div>
+                      <button 
+                        className="delete-item-btn"
+                        onClick={async () => {
+                          if (window.confirm('Delete this preset pack?')) {
+                            await deleteDoc(doc(db, 'presets', item.id));
+                            fetchPresetItems();
                           }
                         }}
                       >

@@ -101,6 +101,18 @@
   justify-content: center;
   gap: 0.5rem;
   flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.developer-credit {
+  font-size: 0.9rem;
+  color: var(--color-text-gray);
+  opacity: 0.8;
+}
+
+.developer-credit strong {
+  color: var(--color-black);
+  font-weight: 600;
 }
 
 @media (max-width: 768px) {
@@ -120,5 +132,9 @@
   
   .footer-bottom p {
     font-size: 0.9rem;
+  }
+  
+  .developer-credit {
+    font-size: 0.8rem;
   }
 }

@@ -4,6 +4,7 @@ import { collection, getDocs, orderBy, query, deleteDoc, doc } from 'firebase/fi
 import { onAuthStateChanged } from 'firebase/auth';
 import { db, auth } from '../../firebase';
 import { Play, ExternalLink, Calendar, Trash2, X } from 'lucide-react';
+import { VideoSkeleton } from '../LoadingSkeleton/LoadingSkeleton';
 import './VideoShowcase.css';
 
 const VideoShowcase = () => {
@@ -95,11 +96,7 @@ const VideoShowcase = () => {
   };
 
   if (loading) {
-    return (
-      <div className="video-loading">
-        <div className="loading-spinner"></div>
-      </div>
-    );
+    return <VideoSkeleton />;
   }
 
   return (

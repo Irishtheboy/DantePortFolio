@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header/Header';
+import ScrollProgress from './components/ScrollProgress/ScrollProgress';
 import Home from './pages/Home/Home';
 import Portfolio from './pages/Portfolio/Portfolio';
 import About from './pages/About/About';
@@ -12,6 +13,7 @@ function App() {
   return (
     <Router>
       <div className="App">
+        <ScrollProgress />
         <Header />
         <main>
           <Routes>
