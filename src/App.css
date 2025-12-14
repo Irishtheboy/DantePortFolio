@@ -93,3 +93,49 @@ html {
   border-color: var(--color-black);
   transform: translateY(-2px);
 }
+
+/* Mobile-first responsive design */
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.8rem !important;
+    line-height: 1.2;
+  }
+  
+  .section-subtitle {
+    font-size: 0.9rem !important;
+    line-height: 1.4;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  /* Ensure touch targets are at least 44px */
+  button,
+  .action-btn,
+  .filter-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Improve text readability */
+  body {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
+  /* Better spacing for small screens */
+  section {
+    padding: 2rem 0 !important;
+  }
+  
+  .container,
+  .gallery-container,
+  .video-container,
+  .preset-container,
+  .booking-container {
+    padding: 0 0.75rem !important;
+  }
+}
