@@ -81,7 +81,7 @@ const Contact = () => {
                 </div>
                 <div className="contact-item">
                   <MapPin size={20} />
-                  <span>Kuilsriver, Cape Town, South Africaa</span>
+                  <span>Kuilsriver, Cape Town, South Africa</span>
                 </div>
               </div>
               
