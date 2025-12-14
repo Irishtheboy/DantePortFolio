@@ -18,6 +18,41 @@ body {
   background: #fff;
   color: var(--color-black);
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+[data-theme="dark"] {
+  --color-black: #ffffff;
+  --color-text-gray: #cccccc;
+}
+
+body[data-theme="dark"] {
+  background: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .glass {
+  background: rgba(0, 0, 0, 0.7) !important;
+  border: 1px solid #333 !important;
+}
+
+[data-theme="dark"] .header {
+  background: rgba(26, 26, 26, 0.95) !important;
+}
+
+[data-theme="dark"] .logo {
+  background: var(--color-mustard) !important;
+  color: #1a1a1a !important;
+}
+
+[data-theme="dark"] .entry-page,
+[data-theme="dark"] .about-page,
+[data-theme="dark"] .admin {
+  background: #1a1a1a !important;
+}
+
+[data-theme="dark"] .hero {
+  background: #1a1a1a !important;
 }
 
 .App {
