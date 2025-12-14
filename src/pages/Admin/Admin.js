@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { collection, addDoc, serverTimestamp, getDocs, orderBy, query } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDocs, orderBy, query, deleteDoc, doc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { db, auth, storage } from '../../firebase';
-import { Upload, Image, Video, Plus, LogOut, Mail, Calendar } from 'lucide-react';
+import { Upload, Image, Video, Plus, LogOut, Mail, Calendar, Trash2 } from 'lucide-react';
 import Login from '../../components/Login/Login';
 import './Admin.css';
 
@@ -28,6 +28,8 @@ const Admin = () => {
   const [uploading, setUploading] = useState(false);
   const [messages, setMessages] = useState([]);
   const [bookings, setBookings] = useState([]);
+  const [galleryItems, setGalleryItems] = useState([]);
+  const [videoItems, setVideoItems] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -41,8 +43,40 @@ const Admin = () => {
       fetchMessages();
     } else if (activeTab === 'bookings') {
       fetchBookings();
+    } else if (activeTab === 'gallery') {
+      fetchGalleryItems();
+    } else if (activeTab === 'videos') {
+      fetchVideoItems();
     }
   }, [activeTab]);
+
+  const fetchGalleryItems = async () => {
+    try {
+      const q = query(collection(db, 'gallery'), orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const galleryData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setGalleryItems(galleryData);
+    } catch (error) {
+      console.error('Error fetching gallery items:', error);
+    }
+  };
+
+  const fetchVideoItems = async () => {
+    try {
+      const q = query(collection(db, 'videos'), orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const videoData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setVideoItems(videoData);
+    } catch (error) {
+      console.error('Error fetching video items:', error);
+    }
+  };
 
   if (loading) return <div className="admin-loading">Loading...</div>;
   if (!user) return <Login onLogin={() => setUser(auth.currentUser)} />;
@@ -119,6 +153,7 @@ const Admin = () => {
 
       alert('Image uploaded successfully!');
       setFormData({ title: '', description: '', category: '', file: null });
+      fetchGalleryItems();
     } catch (error) {
       console.error('Error uploading image:', error);
       alert('Error uploading image. Please try again.');
@@ -155,6 +190,7 @@ const Admin = () => {
 
       alert('Video added successfully!');
       setFormData({ title: '', description: '', category: '', file: null, videoUrl: '' });
+      fetchVideoItems();
     } catch (error) {
       console.error('Error adding video:', error);
       alert('Error adding video. Please try again.');
@@ -223,7 +259,8 @@ const Admin = () => {
           transition={{ duration: 0.4 }}
         >
           {activeTab === 'gallery' && (
-            <form className="upload-form glass" onSubmit={uploadToGallery}>
+            <>
+              <form className="upload-form glass" onSubmit={uploadToGallery}>
               <h2>Add New Image</h2>
               
               <div className="form-group">
@@ -283,11 +320,39 @@ const Admin = () => {
                   </>
                 )}
               </button>
-            </form>
+              </form>
+              
+              <div className="content-list">
+                <h3>Gallery Items ({galleryItems.length})</h3>
+                <div className="items-grid">
+                  {galleryItems.map(item => (
+                    <div key={item.id} className="item-card">
+                      <img src={item.url} alt={item.title} />
+                      <div className="item-info">
+                        <h4>{item.title}</h4>
+                        <span className="item-category">{item.category}</span>
+                      </div>
+                      <button 
+                        className="delete-item-btn"
+                        onClick={async () => {
+                          if (window.confirm('Delete this image?')) {
+                            await deleteDoc(doc(db, 'gallery', item.id));
+                            fetchGalleryItems();
+                          }
+                        }}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
           )}
 
           {activeTab === 'videos' && (
-            <form className="upload-form glass" onSubmit={uploadVideo}>
+            <>
+              <form className="upload-form glass" onSubmit={uploadVideo}>
               <h2>Add New Video</h2>
               
               <div className="form-group">
@@ -358,7 +423,34 @@ const Admin = () => {
                   </>
                 )}
               </button>
-            </form>
+              </form>
+              
+              <div className="content-list">
+                <h3>Video Items ({videoItems.length})</h3>
+                <div className="items-grid">
+                  {videoItems.map(item => (
+                    <div key={item.id} className="item-card">
+                      <img src={item.thumbnail || 'https://via.placeholder.com/300x200'} alt={item.title} />
+                      <div className="item-info">
+                        <h4>{item.title}</h4>
+                        <span className="item-category">{item.category}</span>
+                      </div>
+                      <button 
+                        className="delete-item-btn"
+                        onClick={async () => {
+                          if (window.confirm('Delete this video?')) {
+                            await deleteDoc(doc(db, 'videos', item.id));
+                            fetchVideoItems();
+                          }
+                        }}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
           )}
 
           {activeTab === 'messages' && (

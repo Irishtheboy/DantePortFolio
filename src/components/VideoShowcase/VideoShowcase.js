@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
-import { db } from '../../firebase';
-import { Play, ExternalLink, Calendar } from 'lucide-react';
+import { collection, getDocs, orderBy, query, deleteDoc, doc } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
+import { db, auth } from '../../firebase';
+import { Play, ExternalLink, Calendar, Trash2, X } from 'lucide-react';
 import './VideoShowcase.css';
 
 const VideoShowcase = () => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const [selectedVideo, setSelectedVideo] = useState(null);
 
   useEffect(() => {
     fetchVideos();
+    const unsubscribe = onAuthStateChanged(auth, setUser);
+    return () => unsubscribe();
   }, []);
 
   const fetchVideos = async () => {
@@ -62,6 +67,33 @@ const VideoShowcase = () => {
     }
   };
 
+  const deleteVideo = async (videoId) => {
+    if (!window.confirm('Are you sure you want to delete this video?')) return;
+    
+    try {
+      await deleteDoc(doc(db, 'videos', videoId));
+      setVideos(videos.filter(video => video.id !== videoId));
+    } catch (error) {
+      console.error('Error deleting video:', error);
+    }
+  };
+
+  const getEmbedUrl = (url) => {
+    if (url.includes('youtube.com/watch?v=')) {
+      const videoId = url.split('v=')[1].split('&')[0];
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    if (url.includes('youtu.be/')) {
+      const videoId = url.split('youtu.be/')[1].split('?')[0];
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    if (url.includes('vimeo.com/')) {
+      const videoId = url.split('vimeo.com/')[1];
+      return `https://player.vimeo.com/video/${videoId}`;
+    }
+    return url;
+  };
+
   if (loading) {
     return (
       <div className="video-loading">
@@ -100,10 +132,24 @@ const VideoShowcase = () => {
               <div className="video-thumbnail">
                 <img src={video.thumbnail} alt={video.title} />
                 <div className="video-overlay">
-                  <div className="play-button">
+                  <div 
+                    className="play-button"
+                    onClick={() => setSelectedVideo(video)}
+                  >
                     <Play size={32} fill="white" />
                   </div>
                   <div className="video-duration">{video.duration}</div>
+                  {user && (
+                    <button 
+                      className="delete-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteVideo(video.id);
+                      }}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  )}
                 </div>
               </div>
               
@@ -120,19 +166,22 @@ const VideoShowcase = () => {
                 <p className="video-description">{video.description}</p>
                 
                 <div className="video-actions">
+                  <button 
+                    className="btn-primary"
+                    onClick={() => setSelectedVideo(video)}
+                  >
+                    <Play size={16} />
+                    Watch Video
+                  </button>
                   <a 
                     href={video.videoUrl} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="btn-primary"
+                    className="btn-secondary"
                   >
-                    <Play size={16} />
-                    Watch Video
-                  </a>
-                  <button className="btn-secondary">
                     <ExternalLink size={16} />
-                    Details
-                  </button>
+                    External Link
+                  </a>
                 </div>
               </div>
             </motion.div>
@@ -152,6 +201,32 @@ const VideoShowcase = () => {
             Start Your Project
           </a>
         </motion.div>
+
+        {selectedVideo && (
+          <div className="video-modal" onClick={() => setSelectedVideo(null)}>
+            <div className="video-modal-content" onClick={e => e.stopPropagation()}>
+              <button 
+                className="video-modal-close"
+                onClick={() => setSelectedVideo(null)}
+              >
+                <X size={24} />
+              </button>
+              <div className="video-player">
+                <iframe
+                  src={getEmbedUrl(selectedVideo.videoUrl)}
+                  title={selectedVideo.title}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              </div>
+              <div className="video-modal-info">
+                <h3>{selectedVideo.title}</h3>
+                <p>{selectedVideo.description}</p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

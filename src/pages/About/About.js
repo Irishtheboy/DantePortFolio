@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Camera, Video, Award, Users } from 'lucide-react';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase';
 import './About.css';
 
 const About = () => {
+  const [counts, setCounts] = useState({
+    photos: 0,
+    videos: 0
+  });
+
   const skills = [
     'Portrait Photography',
     'Wedding Photography',
@@ -15,11 +22,29 @@ const About = () => {
     'Post-Processing'
   ];
 
+  useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const [gallerySnapshot, videosSnapshot] = await Promise.all([
+          getDocs(collection(db, 'gallery')),
+          getDocs(collection(db, 'videos'))
+        ]);
+        
+        setCounts({
+          photos: gallerySnapshot.size,
+          videos: videosSnapshot.size
+        });
+      } catch (error) {
+        console.error('Error fetching counts:', error);
+      }
+    };
+
+    fetchCounts();
+  }, []);
+
   const achievements = [
-    { icon: Camera, number: '500+', label: 'Photo Shoots' },
-    { icon: Video, number: '200+', label: 'Videos Produced' },
-    { icon: Award, number: '15+', label: 'Awards Won' },
-    { icon: Users, number: '300+', label: 'Happy Clients' }
+    { icon: Camera, number: counts.photos, label: 'Photos Captured' },
+    { icon: Video, number: counts.videos, label: 'Videos Produced' }
   ];
 
   return (

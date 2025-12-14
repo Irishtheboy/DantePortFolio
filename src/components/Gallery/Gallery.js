@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
-import { db } from '../../firebase';
-import { Eye, Heart } from 'lucide-react';
+import { collection, getDocs, orderBy, query, deleteDoc, doc } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
+import { db, auth } from '../../firebase';
+import { Eye, Heart, Trash2 } from 'lucide-react';
 import './Gallery.css';
 
 const Gallery = () => {
@@ -10,9 +11,12 @@ const Gallery = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     fetchImages();
+    const unsubscribe = onAuthStateChanged(auth, setUser);
+    return () => unsubscribe();
   }, []);
 
   const fetchImages = async () => {
@@ -55,6 +59,17 @@ const Gallery = () => {
     }
   };
 
+  const deleteImage = async (imageId) => {
+    if (!window.confirm('Are you sure you want to delete this image?')) return;
+    
+    try {
+      await deleteDoc(doc(db, 'gallery', imageId));
+      setImages(images.filter(img => img.id !== imageId));
+    } catch (error) {
+      console.error('Error deleting image:', error);
+    }
+  };
+
   const categories = ['all', 'portrait', 'wedding', 'landscape', 'event'];
   
   const filteredImages = filter === 'all' 
@@ -81,7 +96,7 @@ const Gallery = () => {
         >
           <h2 className="section-title gradient-text">Portfolio Gallery</h2>
           <p className="section-subtitle">
-            A collection of my finest work across different photography styles
+           This is a collection of street art with visual appeal ranging from professional settings to raw, underground environments.
           </p>
         </motion.div>
 
@@ -103,39 +118,63 @@ const Gallery = () => {
           ))}
         </motion.div>
 
-        <motion.div
-          className="gallery-grid"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          viewport={{ once: true }}
-        >
-          {filteredImages.map((image, index) => (
-            <motion.div
-              key={image.id}
-              className="gallery-item"
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -10 }}
-              onClick={() => setSelectedImage(image)}
-            >
-              <div className="image-container">
-                <img src={image.url} alt={image.title} />
-                <div className="image-overlay">
-                  <div className="image-info">
-                    <h3>{image.title}</h3>
-                    <div className="image-stats">
-                      <span><Eye size={16} /> View</span>
-                      <span><Heart size={16} /> {image.likes || 0}</span>
+        {filteredImages.length === 0 ? (
+          <motion.div
+            className="empty-gallery"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <p>No images found in this category.</p>
+            {user && <p>Upload some images through the admin panel to get started!</p>}
+          </motion.div>
+        ) : (
+          <motion.div
+            className="gallery-grid"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            viewport={{ once: true }}
+          >
+            {filteredImages.map((image, index) => (
+              <motion.div
+                key={image.id}
+                className="gallery-item"
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -10 }}
+                onClick={() => setSelectedImage(image)}
+              >
+                <div className="image-container">
+                  <img src={image.url} alt={image.title} />
+                  <div className="image-overlay">
+                    <div className="image-info">
+                      <h3>{image.title}</h3>
+                      <div className="image-stats">
+                        <span><Eye size={16} /> View</span>
+                        <span><Heart size={16} /> {image.likes || 0}</span>
+                      </div>
                     </div>
+                    {user && (
+                      <button 
+                        className="delete-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteImage(image.id);
+                        }}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    )}
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
 
         {selectedImage && (
           <div className="lightbox" onClick={() => setSelectedImage(null)}>
