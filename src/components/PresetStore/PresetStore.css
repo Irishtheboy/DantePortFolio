@@ -319,25 +319,51 @@
 
 @media (max-width: 768px) {
   .preset-store {
-    padding: 4rem 0;
+    padding: 3rem 0;
   }
   
   .preset-container {
     padding: 0 1rem;
   }
   
+  .preset-header .section-title {
+    font-size: 2rem;
+  }
+  
+  .preset-header .section-subtitle {
+    font-size: 1rem;
+  }
+  
+  .currency-selector {
+    margin: 1rem 0;
+  }
+  
+  .currency-selector select {
+    width: 100%;
+    max-width: 200px;
+  }
+  
   .preset-grid {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.5rem;
+  }
+  
+  .preset-card {
+    margin: 0 0.5rem;
   }
   
   .preset-content {
-    padding: 1.5rem;
+    padding: 1.25rem;
+  }
+  
+  .preset-title {
+    font-size: 1.2rem;
   }
   
   .preset-stats {
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 0.75rem;
+    justify-content: space-between;
   }
   
   .preset-pricing {
@@ -346,17 +372,35 @@
     align-items: stretch;
   }
   
+  .current-price {
+    font-size: 1.3rem;
+  }
+  
   .buy-btn {
     justify-content: center;
+    width: 100%;
+  }
+  
+  .preset-modal {
+    padding: 1rem;
   }
   
   .preset-modal-content {
     flex-direction: column;
     max-width: 95vw;
+    max-height: 90vh;
   }
   
   .preset-modal-content img {
     width: 100%;
-    height: 250px;
+    height: 200px;
+  }
+  
+  .preset-modal-info {
+    padding: 1.5rem;
+  }
+  
+  .preset-modal-info h3 {
+    font-size: 1.4rem;
   }
 }

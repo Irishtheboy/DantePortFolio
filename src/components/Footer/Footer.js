@@ -1,5 +1,5 @@
 import React from 'react';
-import { Camera, Heart } from 'lucide-react';
+import { Camera, Heart, Instagram } from 'lucide-react';
 import './Footer.css';
 
 const Footer = () => {
@@ -34,6 +34,16 @@ const Footer = () => {
                 <li><a href="/about">About</a></li>
                 <li><a href="#contact">Contact</a></li>
               </ul>
+            </div>
+            
+            <div className="footer-section">
+              <h4>Follow Me</h4>
+              <div className="social-links">
+                <a href="https://www.instagram.com/killydid/" target="_blank" rel="noopener noreferrer" className="social-link">
+                  <Instagram size={20} />
+                  @killydid
+                </a>
+              </div>
             </div>
           </div>
         </div>

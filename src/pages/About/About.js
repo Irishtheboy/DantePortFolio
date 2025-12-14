@@ -10,6 +10,7 @@ const About = () => {
     photos: 0,
     videos: 0
   });
+  const [aboutImage, setAboutImage] = useState('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=600&fit=crop');
 
   const skills = [
     'Portrait Photography',
@@ -25,15 +26,21 @@ const About = () => {
   useEffect(() => {
     const fetchCounts = async () => {
       try {
-        const [gallerySnapshot, videosSnapshot] = await Promise.all([
+        const [gallerySnapshot, videosSnapshot, aboutSnapshot] = await Promise.all([
           getDocs(collection(db, 'gallery')),
-          getDocs(collection(db, 'videos'))
+          getDocs(collection(db, 'videos')),
+          getDocs(collection(db, 'about'))
         ]);
         
         setCounts({
           photos: gallerySnapshot.size,
           videos: videosSnapshot.size
         });
+        
+        if (!aboutSnapshot.empty) {
+          const aboutData = aboutSnapshot.docs[0].data();
+          setAboutImage(aboutData.imageUrl);
+        }
       } catch (error) {
         console.error('Error fetching counts:', error);
       }
@@ -78,7 +85,7 @@ const About = () => {
             </div>
             <div className="about-image">
               <img 
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=600&fit=crop" 
+                src={aboutImage} 
                 alt="DANTEKILLSTORM" 
               />
             </div>

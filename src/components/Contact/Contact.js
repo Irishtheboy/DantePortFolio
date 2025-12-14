@@ -73,11 +73,11 @@ const Contact = () => {
               <div className="contact-details">
                 <div className="contact-item">
                   <Mail size={20} />
-                  <span>dante@killstorm.com</span>
+                  <span>Magamasinethemba@gmail.com</span>
                 </div>
                 <div className="contact-item">
                   <Phone size={20} />
-                  <span>+27 82 456 7890</span>
+                  <span>+27 69 158 8938</span>
                 </div>
                 <div className="contact-item">
                   <MapPin size={20} />
@@ -88,14 +88,8 @@ const Contact = () => {
               <div className="social-links">
                 <h4>Follow My Work</h4>
                 <div className="social-icons">
-                  <a href="#" className="social-link">
+                  <a href="https://www.instagram.com/killydid/" target="_blank" rel="noopener noreferrer" className="social-link">
                     <Instagram size={20} />
-                  </a>
-                  <a href="#" className="social-link">
-                    <Twitter size={20} />
-                  </a>
-                  <a href="#" className="social-link">
-                    <Linkedin size={20} />
                   </a>
                 </div>
               </div>

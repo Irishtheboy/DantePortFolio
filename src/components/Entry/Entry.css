@@ -1,0 +1,132 @@
+.entry-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 0 var(--spacing-container);
+  background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+}
+
+.entry-content {
+  padding-right: 3rem;
+}
+
+.entry-header {
+  margin-bottom: 2rem;
+}
+
+.entry-title {
+  font-family: var(--font-serif);
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--color-black);
+  margin-bottom: 1rem;
+}
+
+.entry-subtitle {
+  font-size: 1.2rem;
+  color: var(--color-text-gray);
+  font-weight: 500;
+}
+
+.entry-description {
+  margin-bottom: 3rem;
+}
+
+.entry-description p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--color-text-gray);
+  max-width: 500px;
+}
+
+.entry-stats {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-mustard);
+  font-weight: 600;
+}
+
+.entry-actions {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.entry-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+.visual-container {
+  position: relative;
+  width: 400px;
+  height: 500px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.entry-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.visual-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(255, 194, 14, 0.1) 0%, transparent 50%);
+}
+
+@media (max-width: 768px) {
+  .entry-page {
+    grid-template-columns: 1fr;
+    padding: 2rem 1rem;
+    text-align: center;
+  }
+  
+  .entry-content {
+    padding-right: 0;
+    order: 2;
+  }
+  
+  .entry-visual {
+    order: 1;
+    height: 50vh;
+    margin-bottom: 2rem;
+  }
+  
+  .entry-title {
+    font-size: 2.5rem;
+  }
+  
+  .entry-stats {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .entry-actions {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .visual-container {
+    width: 300px;
+    height: 350px;
+  }
+}

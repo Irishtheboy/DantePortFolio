@@ -335,20 +335,41 @@
 
 @media (max-width: 768px) {
   .video-showcase {
-    padding: 4rem 0;
+    padding: 3rem 0;
   }
   
   .video-container {
     padding: 0 1rem;
   }
   
+  .video-header .section-title {
+    font-size: 2rem;
+  }
+  
+  .video-header .section-subtitle {
+    font-size: 1rem;
+  }
+  
   .video-grid {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.5rem;
+  }
+  
+  .video-card {
+    margin: 0 0.5rem;
+  }
+  
+  .video-content {
+    padding: 1.25rem;
+  }
+  
+  .video-title {
+    font-size: 1.2rem;
   }
   
   .video-actions {
     flex-direction: column;
+    gap: 0.75rem;
   }
   
   .video-actions .btn-primary,
@@ -359,10 +380,15 @@
   
   .video-cta {
     padding: 2rem 1rem;
+    margin: 0 0.5rem;
   }
   
   .video-cta h3 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+  }
+  
+  .video-cta p {
+    font-size: 1rem;
   }
   
   .video-modal {
@@ -371,6 +397,14 @@
   
   .video-modal-content {
     max-width: 95vw;
-    max-height: 95vh;
+    max-height: 90vh;
+  }
+  
+  .video-modal-info {
+    padding: 1.25rem;
+  }
+  
+  .video-modal-info h3 {
+    font-size: 1.3rem;
   }
 }

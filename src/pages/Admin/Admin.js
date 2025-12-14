@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { collection, addDoc, serverTimestamp, getDocs, orderBy, query, deleteDoc, doc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { collection, addDoc, serverTimestamp, getDocs, orderBy, query, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { db, auth, storage } from '../../firebase';
+import { db, auth } from '../../firebase';
+import { uploadToCloudinary } from '../../cloudinary';
 import { Upload, Image, Video, Plus, LogOut, Mail, Calendar, Trash2, Package } from 'lucide-react';
 import Login from '../../components/Login/Login';
 import './Admin.css';
@@ -150,18 +150,8 @@ const Admin = () => {
 
     setUploading(true);
     try {
-      const formDataUpload = new FormData();
-      formDataUpload.append('file', formData.file);
-      formDataUpload.append('upload_preset', 'dante_portfolio');
-
-      const response = await fetch('https://api.cloudinary.com/v1_1/dlrxspk2c/image/upload', {
-        method: 'POST',
-        body: formDataUpload
-      });
-      
-      const result = await response.json();
-      const imageUrl = result.secure_url;
-
+      const imageUrl = await uploadToCloudinary(formData.file);
+        
       await addDoc(collection(db, 'gallery'), {
         title: formData.title,
         description: formData.description,
@@ -176,7 +166,7 @@ const Admin = () => {
       fetchGalleryItems();
     } catch (error) {
       console.error('Error uploading image:', error);
-      alert('Error uploading image. Please try again.');
+      alert(`Error uploading image: ${error.message}`);
     } finally {
       setUploading(false);
     }
@@ -192,9 +182,7 @@ const Admin = () => {
       
       // Upload thumbnail if provided
       if (formData.file) {
-        const thumbnailRef = ref(storage, `thumbnails/${Date.now()}_${formData.file.name}`);
-        const snapshot = await uploadBytes(thumbnailRef, formData.file);
-        thumbnailUrl = await getDownloadURL(snapshot.ref);
+        thumbnailUrl = await uploadToCloudinary(formData.file);
       }
 
       // Add to Firestore
@@ -225,9 +213,7 @@ const Admin = () => {
 
     setUploading(true);
     try {
-      const fileRef = ref(storage, `presets/${Date.now()}_${formData.file.name}`);
-      const snapshot = await uploadBytes(fileRef, formData.file);
-      const fileUrl = await getDownloadURL(snapshot.ref);
+      const fileUrl = await uploadToCloudinary(formData.file);
 
       await addDoc(collection(db, 'presets'), {
         title: formData.title,
@@ -311,6 +297,20 @@ const Admin = () => {
           >
             <Calendar size={20} />
             Bookings
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'hero' ? 'active' : ''}`}
+            onClick={() => setActiveTab('hero')}
+          >
+            <Image size={20} />
+            Hero Image
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'about' ? 'active' : ''}`}
+            onClick={() => setActiveTab('about')}
+          >
+            <Image size={20} />
+            About Image
           </button>
         </div>
 
@@ -702,6 +702,110 @@ const Admin = () => {
                 ))
               )}
             </div>
+          )}
+
+          {activeTab === 'hero' && (
+            <form className="upload-form glass" onSubmit={async (e) => {
+              e.preventDefault();
+              if (!formData.file) return;
+              
+              setUploading(true);
+              try {
+                const imageUrl = await uploadToCloudinary(formData.file);
+                
+                const heroCollection = collection(db, 'hero');
+                const heroSnap = await getDocs(heroCollection);
+                
+                if (heroSnap.empty) {
+                  await addDoc(heroCollection, { imageUrl });
+                } else {
+                  const heroDoc = heroSnap.docs[0];
+                  await updateDoc(doc(db, 'hero', heroDoc.id), { imageUrl });
+                }
+                
+                alert('Hero image updated successfully!');
+                setFormData({ title: '', description: '', category: '', file: null, videoUrl: '', price: '', originalPrice: '', presetCount: '' });
+              } catch (error) {
+                alert('Error updating hero image.');
+              } finally {
+                setUploading(false);
+              }
+            }}>
+              <h2>Update Hero Image</h2>
+              
+              <div className="form-group">
+                <label>Hero Image</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  required
+                />
+              </div>
+
+              <button type="submit" className="btn-primary" disabled={uploading}>
+                {uploading ? (
+                  <div className="loading-spinner small"></div>
+                ) : (
+                  <>
+                    <Upload size={16} />
+                    Update Hero Image
+                  </>
+                )}
+              </button>
+            </form>
+          )}
+
+          {activeTab === 'about' && (
+            <form className="upload-form glass" onSubmit={async (e) => {
+              e.preventDefault();
+              if (!formData.file) return;
+              
+              setUploading(true);
+              try {
+                const imageUrl = await uploadToCloudinary(formData.file);
+                
+                const aboutCollection = collection(db, 'about');
+                const aboutSnap = await getDocs(aboutCollection);
+                
+                if (aboutSnap.empty) {
+                  await addDoc(aboutCollection, { imageUrl });
+                } else {
+                  const aboutDoc = aboutSnap.docs[0];
+                  await updateDoc(doc(db, 'about', aboutDoc.id), { imageUrl });
+                }
+                
+                alert('About image updated successfully!');
+                setFormData({ title: '', description: '', category: '', file: null, videoUrl: '', price: '', originalPrice: '', presetCount: '' });
+              } catch (error) {
+                alert('Error updating about image.');
+              } finally {
+                setUploading(false);
+              }
+            }}>
+              <h2>Update About Image</h2>
+              
+              <div className="form-group">
+                <label>About Page Image</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  required
+                />
+              </div>
+
+              <button type="submit" className="btn-primary" disabled={uploading}>
+                {uploading ? (
+                  <div className="loading-spinner small"></div>
+                ) : (
+                  <>
+                    <Upload size={16} />
+                    Update About Image
+                  </>
+                )}
+              </button>
+            </form>
           )}
         </motion.div>
       </div>
