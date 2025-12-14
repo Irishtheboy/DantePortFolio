@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/DantePortFolio/static/css/main.ee6543eb.css",
+    "main.js": "/DantePortFolio/static/js/main.b02d557c.js",
+    "static/js/453.20932c16.chunk.js": "/DantePortFolio/static/js/453.20932c16.chunk.js",
+    "index.html": "/DantePortFolio/index.html",
+    "main.ee6543eb.css.map": "/DantePortFolio/static/css/main.ee6543eb.css.map",
+    "main.b02d557c.js.map": "/DantePortFolio/static/js/main.b02d557c.js.map",
+    "453.20932c16.chunk.js.map": "/DantePortFolio/static/js/453.20932c16.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ee6543eb.css",
+    "static/js/main.b02d557c.js"
+  ]
+}
