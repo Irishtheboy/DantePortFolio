@@ -67,7 +67,11 @@ html {
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
 }
 
 .btn-primary:hover {
@@ -95,6 +99,45 @@ html {
 }
 
 /* Mobile-first responsive design */
+@media (max-width: 768px) {
+  :root {
+    --spacing-container: 1rem;
+  }
+  
+  .section-title {
+    font-size: 2rem !important;
+    line-height: 1.2;
+  }
+  
+  .section-subtitle {
+    font-size: 1rem !important;
+    line-height: 1.4;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9rem;
+    width: 100%;
+    text-align: center;
+  }
+  
+  /* Better spacing for mobile */
+  section {
+    padding: 3rem 0 !important;
+  }
+  
+  .container,
+  .gallery-container,
+  .video-container,
+  .preset-container,
+  .booking-container,
+  .contact-container,
+  .about-container {
+    padding: 0 1rem !important;
+  }
+}
+
 @media (max-width: 480px) {
   .section-title {
     font-size: 1.8rem !important;
@@ -104,12 +147,6 @@ html {
   .section-subtitle {
     font-size: 0.9rem !important;
     line-height: 1.4;
-  }
-  
-  .btn-primary,
-  .btn-secondary {
-    padding: 0.875rem 1.5rem;
-    font-size: 0.9rem;
   }
   
   /* Ensure touch targets are at least 44px */
@@ -135,7 +172,9 @@ html {
   .gallery-container,
   .video-container,
   .preset-container,
-  .booking-container {
+  .booking-container,
+  .contact-container,
+  .about-container {
     padding: 0 0.75rem !important;
   }
 }

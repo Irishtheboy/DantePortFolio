@@ -374,17 +374,37 @@
     font-size: 2.5rem;
   }
   
-  .admin-tabs {
+  .admin-header-content {
     flex-direction: column;
-    align-items: center;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .admin-tabs {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
   }
   
   .tab-btn {
-    width: 200px;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    min-width: 120px;
     justify-content: center;
   }
   
   .upload-form {
     padding: 1.5rem;
+  }
+  
+  .items-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .message-header,
+  .booking-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
 }
