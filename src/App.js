@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header/Header';
 import ScrollProgress from './components/ScrollProgress/ScrollProgress';
 import Entry from './components/Entry/Entry';
@@ -19,11 +19,11 @@ function App() {
         <main>
           <Routes>
             <Route path="/" element={<Entry />} />
-            <Route path="/dantekillstorm-portfolio" element={<Entry />} />
             <Route path="/home" element={<Home />} />
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/about" element={<About />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="*" element={<Entry />} />
           </Routes>
         </main>
         <Footer />

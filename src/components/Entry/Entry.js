@@ -1,10 +1,42 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Camera, Video, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase';
 import './Entry.css';
 
 const Entry = () => {
+  const [stats, setStats] = useState({ projects: 0, videos: 0, experience: 5 });
+  const [heroImage, setHeroImage] = useState('https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&h=800&fit=crop');
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const [gallerySnap, videosSnap, heroSnap] = await Promise.all([
+          getDocs(collection(db, 'gallery')),
+          getDocs(collection(db, 'videos')),
+          getDocs(collection(db, 'hero'))
+        ]);
+        
+        setStats({
+          projects: gallerySnap.size,
+          videos: videosSnap.size,
+          experience: 5
+        });
+        
+        if (!heroSnap.empty) {
+          const heroData = heroSnap.docs[0].data();
+          setHeroImage(heroData.imageUrl);
+        }
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+      }
+    };
+    
+    fetchStats();
+  }, []);
+
   return (
     <div className="entry-page">
       <motion.div
@@ -31,15 +63,15 @@ const Entry = () => {
         <div className="entry-stats">
           <div className="stat-item">
             <Camera size={24} />
-            <span>500+ Projects</span>
+            <span>{stats.projects}+ Projects</span>
           </div>
           <div className="stat-item">
             <Video size={24} />
-            <span>100+ Videos</span>
+            <span>{stats.videos}+ Videos</span>
           </div>
           <div className="stat-item">
             <Star size={24} />
-            <span>5 Years Experience</span>
+            <span>{stats.experience} Years Experience</span>
           </div>
         </div>
 
@@ -61,7 +93,7 @@ const Entry = () => {
       >
         <div className="visual-container">
           <img 
-            src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&h=800&fit=crop" 
+            src={heroImage} 
             alt="DANTEKILLSTORM Photography" 
             className="entry-image"
           />
