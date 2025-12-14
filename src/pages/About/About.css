@@ -1,0 +1,269 @@
+.about-page {
+  min-height: 100vh;
+  padding-top: 6rem;
+  background: #fff;
+  position: relative;
+}
+
+.about-page::before {
+  content: "";
+  position: absolute;
+  top: 100px;
+  right: 50px;
+  width: 120px;
+  height: 120px;
+  background-image: radial-gradient(var(--color-black) 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+  opacity: 0.3;
+}
+
+.about-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.about-hero {
+  padding: 4rem 0;
+}
+
+.about-content {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.about-text h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.1;
+  font-family: var(--font-serif);
+  color: var(--color-black);
+}
+
+.about-intro {
+  font-size: 1.3rem;
+  color: var(--color-mustard);
+  margin-bottom: 2rem;
+  font-weight: 500;
+}
+
+.about-description p {
+  color: var(--color-text-gray);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.about-image {
+  position: relative;
+}
+
+.about-image img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(255, 107, 53, 0.2);
+}
+
+.achievements {
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.achievements h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-black);
+  margin-bottom: 3rem;
+  font-family: var(--font-serif);
+}
+
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.achievement-card {
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: transform 0.3s ease;
+  position: relative;
+}
+
+.achievement-card::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 30px;
+  height: 30px;
+  background: var(--color-mustard);
+  opacity: 0.3;
+}
+
+.achievement-card:hover {
+  transform: translateY(-10px);
+}
+
+.achievement-icon {
+  color: var(--color-mustard);
+  margin-bottom: 1rem;
+}
+
+.achievement-card h3 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-black);
+  margin-bottom: 0.5rem;
+  font-family: var(--font-serif);
+}
+
+.achievement-card p {
+  color: var(--color-text-gray);
+  font-weight: 500;
+}
+
+.skills {
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.skills h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-black);
+  margin-bottom: 3rem;
+  font-family: var(--font-serif);
+}
+
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.skill-tag {
+  background: rgba(255, 194, 14, 0.1);
+  border: 1px solid rgba(255, 194, 14, 0.3);
+  color: var(--color-mustard);
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.skill-tag:hover {
+  background: var(--color-mustard);
+  color: var(--color-black);
+  transform: translateY(-2px);
+}
+
+.philosophy {
+  padding: 4rem 0;
+  background: #f8f8f8;
+  position: relative;
+}
+
+.philosophy::before {
+  content: "";
+  position: absolute;
+  bottom: 50px;
+  left: 100px;
+  width: 60px;
+  height: 60px;
+  background: var(--color-black);
+  opacity: 0.1;
+}
+
+.philosophy-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 3rem;
+  text-align: center;
+}
+
+.philosophy-content h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-black);
+  margin-bottom: 2rem;
+  font-family: var(--font-serif);
+}
+
+.philosophy-content blockquote {
+  font-size: 1.3rem;
+  line-height: 1.6;
+  color: var(--color-text-gray);
+  font-style: italic;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.philosophy-content blockquote::before {
+  content: '"';
+  font-size: 4rem;
+  color: var(--color-mustard);
+  position: absolute;
+  top: -1rem;
+  left: -2rem;
+  font-family: serif;
+}
+
+.philosophy-content cite {
+  color: var(--color-mustard);
+  font-weight: 600;
+  font-style: normal;
+}
+
+@media (max-width: 768px) {
+  .about-container {
+    padding: 0 1rem;
+  }
+  
+  .about-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
+  
+  .about-text h1 {
+    font-size: 2.5rem;
+  }
+  
+  .about-image img {
+    height: 400px;
+  }
+  
+  .achievements h2,
+  .skills h2,
+  .philosophy-content h2 {
+    font-size: 2rem;
+  }
+  
+  .achievements-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .philosophy-content {
+    padding: 2rem 1.5rem;
+  }
+  
+  .philosophy-content blockquote {
+    font-size: 1.1rem;
+  }
+  
+  .philosophy-content blockquote::before {
+    font-size: 3rem;
+    top: -0.5rem;
+    left: -1rem;
+  }
+}

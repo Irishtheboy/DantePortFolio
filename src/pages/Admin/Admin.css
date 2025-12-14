@@ -1,0 +1,291 @@
+.admin {
+  min-height: 100vh;
+  padding: 8rem 0 4rem;
+  background: #fff;
+  position: relative;
+}
+
+.admin::before {
+  content: "";
+  position: absolute;
+  top: 150px;
+  right: 80px;
+  width: 100px;
+  height: 100px;
+  background-image: radial-gradient(var(--color-black) 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+  opacity: 0.2;
+}
+
+.admin-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.admin-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.admin-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-header h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  font-family: var(--font-serif);
+  color: var(--color-black);
+}
+
+.admin-header p {
+  color: var(--color-text-gray);
+  font-size: 1.1rem;
+}
+
+.admin-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: var(--color-black);
+  font-size: 1.2rem;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 1px solid #ccc;
+  color: var(--color-black);
+  padding: 1rem 1.5rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.tab-btn:hover,
+.tab-btn.active {
+  background: var(--color-mustard);
+  border-color: var(--color-mustard);
+  color: var(--color-black);
+}
+
+.admin-content {
+  width: 100%;
+}
+
+.upload-form {
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.upload-form h2 {
+  color: var(--color-black);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-family: var(--font-serif);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  color: var(--color-black);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: var(--color-black);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--color-mustard);
+  background: rgba(255, 194, 14, 0.05);
+}
+
+.form-group input[type="file"] {
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.form-group select option {
+  background: #1a1a1a;
+  color: white;
+}
+
+.upload-form .btn-primary {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+}
+
+.messages-list {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.messages-list h2 {
+  color: var(--color-black);
+  text-align: center;
+  margin-bottom: 2rem;
+  font-family: var(--font-serif);
+}
+
+.message-card {
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.message-header h3 {
+  color: var(--color-black);
+  font-size: 1.2rem;
+  font-family: var(--font-serif);
+}
+
+.message-date {
+  color: var(--color-text-gray);
+  font-size: 0.9rem;
+}
+
+.message-info {
+  margin-bottom: 1rem;
+  color: var(--color-text-gray);
+}
+
+.message-content {
+  color: var(--color-black);
+  line-height: 1.6;
+}
+
+.bookings-list {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.bookings-list h2 {
+  color: var(--color-black);
+  text-align: center;
+  margin-bottom: 2rem;
+  font-family: var(--font-serif);
+}
+
+.booking-card {
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.booking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.booking-header h3 {
+  color: var(--color-black);
+  font-size: 1.2rem;
+  font-family: var(--font-serif);
+}
+
+.booking-price {
+  color: var(--color-mustard);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.booking-info {
+  margin-bottom: 1rem;
+}
+
+.booking-info p {
+  color: var(--color-text-gray);
+  margin-bottom: 0.5rem;
+}
+
+.booking-message {
+  background: #f8f8f8;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.booking-message p {
+  color: var(--color-black);
+  line-height: 1.5;
+}
+
+.booking-date {
+  font-size: 0.9rem;
+  color: var(--color-text-gray);
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .admin {
+    padding: 6rem 0 2rem;
+  }
+  
+  .admin-container {
+    padding: 0 1rem;
+  }
+  
+  .admin-header h1 {
+    font-size: 2.5rem;
+  }
+  
+  .admin-tabs {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .tab-btn {
+    width: 200px;
+    justify-content: center;
+  }
+  
+  .upload-form {
+    padding: 1.5rem;
+  }
+}
