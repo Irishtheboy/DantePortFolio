@@ -9,7 +9,7 @@ export const sendEmailNotification = async (type, data) => {
       body: JSON.stringify({
         service_id: 'service_killydid',
         template_id: type === 'booking' ? 'template_booking' : 'template_message',
-        user_id: 'your_emailjs_user_id',
+        user_id: '2e-RBRRMyLYF0sevl',
         template_params: {
           to_email: 'Magamasinethemba@gmail.com',
           from_name: data.name,
