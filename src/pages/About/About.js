@@ -80,10 +80,14 @@ I specialize in visual narratives that bleed authenticity. My work sits at the i
               </div>
             </div>
             <div className="about-image">
-              <img 
-                src={aboutImage} 
-                alt="DANTEKILLSTORM" 
-              />
+              <div className="stack">
+                <div className="card">
+                  <img 
+                    src={aboutImage} 
+                    alt="DANTEKILLSTORM" 
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </motion.section>
