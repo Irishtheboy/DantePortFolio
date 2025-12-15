@@ -229,55 +229,57 @@ const Gallery = () => {
                 whileHover={{ y: -10 }}
                 onClick={() => setSelectedImage(image)}
               >
-                <div className="image-container">
-                  <img src={image.url} alt={image.title} />
-                  <div className="image-overlay">
-                    <div className="image-info">
-                      <h3>{image.title}</h3>
-                      <div className="image-stats">
-                        <span><Eye size={16} /> View</span>
-                        <span><Heart size={16} /> {image.likes || 0}</span>
+                <div className="stack">
+                  <div className="card">
+                    <img src={image.url} alt={image.title} />
+                    <div className="image-overlay">
+                      <div className="image-info">
+                        <h3>{image.title}</h3>
+                        <div className="image-stats">
+                          <span><Eye size={16} /> View</span>
+                          <span><Heart size={16} /> {image.likes || 0}</span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="image-actions">
-                      <button 
-                        className={`action-btn ${favorites.has(image.id) ? 'favorited' : ''}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleFavorite(image.id);
-                        }}
-                      >
-                        <Heart size={16} fill={favorites.has(image.id) ? 'currentColor' : 'none'} />
-                      </button>
-                      <button 
-                        className="action-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          shareImage(image);
-                        }}
-                      >
-                        <Share2 size={16} />
-                      </button>
-                      <button 
-                        className="action-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedImage(image);
-                        }}
-                      >
-                        <ZoomIn size={16} />
-                      </button>
-                      {user && (
+                      <div className="image-actions">
                         <button 
-                          className="action-btn delete-btn"
+                          className={`action-btn ${favorites.has(image.id) ? 'favorited' : ''}`}
                           onClick={(e) => {
                             e.stopPropagation();
-                            deleteImage(image.id);
+                            toggleFavorite(image.id);
                           }}
                         >
-                          <Trash2 size={16} />
+                          <Heart size={16} fill={favorites.has(image.id) ? 'currentColor' : 'none'} />
                         </button>
-                      )}
+                        <button 
+                          className="action-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            shareImage(image);
+                          }}
+                        >
+                          <Share2 size={16} />
+                        </button>
+                        <button 
+                          className="action-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedImage(image);
+                          }}
+                        >
+                          <ZoomIn size={16} />
+                        </button>
+                        {user && (
+                          <button 
+                            className="action-btn delete-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteImage(image.id);
+                            }}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
