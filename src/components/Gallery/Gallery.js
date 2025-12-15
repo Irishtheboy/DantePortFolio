@@ -235,6 +235,8 @@ const Gallery = () => {
                     <div className="image-overlay">
                       <div className="image-info">
                         <h3>{image.title}</h3>
+                        {image.clientName && <p className="image-client">{image.clientName}</p>}
+                        {image.location && <p className="image-location">{image.location}</p>}
                         <div className="image-stats">
                           <span><Eye size={16} /> View</span>
                           <span><Heart size={16} /> {image.likes || 0}</span>

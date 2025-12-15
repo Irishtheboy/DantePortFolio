@@ -330,6 +330,20 @@
   font-family: var(--font-serif);
 }
 
+.image-client,
+.image-location {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  margin: 0.2rem 0;
+}
+
+.item-client,
+.item-location {
+  color: var(--color-text-gray);
+  font-size: 0.8rem;
+  margin: 0.2rem 0;
+}
+
 .image-stats {
   display: flex;
   gap: 1rem;

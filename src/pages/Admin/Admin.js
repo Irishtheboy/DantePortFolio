@@ -39,7 +39,10 @@ const Admin = () => {
     videoUrl: '',
     price: '',
     originalPrice: '',
-    presetCount: ''
+    presetCount: '',
+    clientName: '',
+    location: '',
+    dateTaken: ''
   });
 
   useEffect(() => {
@@ -157,12 +160,15 @@ const Admin = () => {
         description: formData.description,
         category: formData.category,
         url: imageUrl,
+        clientName: formData.clientName,
+        location: formData.location,
+        dateTaken: formData.dateTaken,
         createdAt: serverTimestamp(),
         likes: 0
       });
 
       alert('Image uploaded successfully!');
-      setFormData({ title: '', description: '', category: '', file: null, videoUrl: '', price: '', originalPrice: '', presetCount: '' });
+      setFormData({ title: '', description: '', category: '', file: null, videoUrl: '', price: '', originalPrice: '', presetCount: '', clientName: '', location: '', dateTaken: '' });
       fetchGalleryItems();
     } catch (error) {
       console.error('Error uploading image:', error);
@@ -371,6 +377,38 @@ const Admin = () => {
               </div>
 
               <div className="form-group">
+                <label>Client/Event Name (Optional)</label>
+                <input
+                  type="text"
+                  name="clientName"
+                  value={formData.clientName || ''}
+                  onChange={handleInputChange}
+                  placeholder="e.g., John & Sarah Wedding, Corporate Event 2024"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Location (Optional)</label>
+                <input
+                  type="text"
+                  name="location"
+                  value={formData.location || ''}
+                  onChange={handleInputChange}
+                  placeholder="e.g., Cape Town, Johannesburg"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Date Taken (Optional)</label>
+                <input
+                  type="date"
+                  name="dateTaken"
+                  value={formData.dateTaken || ''}
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="form-group">
                 <label>Image File</label>
                 <input
                   type="file"
@@ -401,6 +439,8 @@ const Admin = () => {
                       <div className="item-info">
                         <h4>{item.title}</h4>
                         <span className="item-category">{item.category}</span>
+                        {item.clientName && <p className="item-client">{item.clientName}</p>}
+                        {item.location && <p className="item-location">{item.location}</p>}
                       </div>
                       <button 
                         className="delete-item-btn"
