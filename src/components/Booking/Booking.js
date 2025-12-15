@@ -4,6 +4,7 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { MapPin, Camera, Video, Clock } from 'lucide-react';
 import { detectUserCurrency, formatPrice } from '../../utils/currency';
+import { sendEmailNotification } from '../../utils/emailService';
 import './Booking.css';
 
 const Booking = () => {
@@ -56,13 +57,18 @@ const Booking = () => {
     try {
       const selectedService = services.find(s => s.id === formData.service);
       
-      await addDoc(collection(db, 'bookings'), {
+      const bookingData = {
         ...formData,
         serviceName: selectedService?.name,
         servicePrice: formatPrice(selectedService?.price, userCurrency),
         createdAt: serverTimestamp(),
         status: 'pending'
-      });
+      };
+      
+      await addDoc(collection(db, 'bookings'), bookingData);
+      
+      // Send email notification
+      await sendEmailNotification('booking', bookingData);
       
       alert('Booking request sent successfully! Dante will contact you within 24 hours.');
       setFormData({

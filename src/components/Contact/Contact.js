@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { Mail, Phone, MapPin, Send, Instagram } from 'lucide-react';
+import { sendEmailNotification } from '../../utils/emailService';
 import './Contact.css';
 
 const Contact = () => {
@@ -34,6 +35,9 @@ const Contact = () => {
         createdAt: serverTimestamp(),
         read: false
       });
+      
+      // Send email notification
+      await sendEmailNotification('message', formData);
       
       alert('Message sent successfully! I\'ll get back to you soon.');
       setFormData({ name: '', email: '', subject: '', message: '' });
