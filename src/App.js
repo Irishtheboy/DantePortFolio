@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 // Force deployment update v2
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './contexts/ThemeContext';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
+import LoadingScreen from './components/LoadingScreen/LoadingScreen';
 import Header from './components/Header/Header';
 import ScrollProgress from './components/ScrollProgress/ScrollProgress';
 import BackToTop from './components/BackToTop/BackToTop';
@@ -15,6 +16,26 @@ import Footer from './components/Footer/Footer';
 import './App.css';
 
 function App() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 3500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return (
+      <ErrorBoundary>
+        <ThemeProvider>
+          <LoadingScreen />
+        </ThemeProvider>
+      </ErrorBoundary>
+    );
+  }
+
   return (
     <ErrorBoundary>
       <ThemeProvider>

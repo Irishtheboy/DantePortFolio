@@ -9,8 +9,7 @@ const Footer = () => {
         <div className="footer-content">
           <div className="footer-brand">
             <div className="footer-logo">
-              <Camera size={24} />
-              <span className="gradient-text">DANTEKILLSTORM</span>
+              <img src={`${process.env.PUBLIC_URL}/logo.png`} alt="DANTEKILLSTORM" className="logo-image" />
             </div>
             <p>Creating visual stories that inspire and captivate.</p>
           </div>

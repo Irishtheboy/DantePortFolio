@@ -13,11 +13,15 @@ body {
 [data-theme="dark"] {
   --bg-color: #000000;
   --text-color: #ffffff;
+  --text-secondary: #cccccc;
+  --border-color: #333333;
 }
 
 [data-theme="light"] {
   --bg-color: #ffffff;
   --text-color: #000000;
+  --text-secondary: #666666;
+  --border-color: #e0e0e0;
 }
 
 code {
