@@ -132,6 +132,23 @@
   margin-bottom: 4rem;
 }
 
+.empty-store {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-secondary);
+}
+
+.empty-store h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+}
+
+.empty-store p {
+  font-size: 1rem;
+}
+
 .product-card {
   background: var(--bg-color);
   border: 1px solid var(--border-color);
@@ -456,7 +473,7 @@
   cursor: not-allowed;
 }
 
-.signup-cta {
+.auth-cta {
   background: linear-gradient(135deg, #ff6b35, #f7931e);
   color: white;
   padding: 2rem;
@@ -465,19 +482,25 @@
   margin-bottom: 3rem;
 }
 
-.signup-cta h3 {
+.auth-cta h3 {
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
 }
 
-.signup-cta p {
+.auth-cta p {
   margin-bottom: 1.5rem;
   opacity: 0.9;
 }
 
+.auth-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.login-btn,
 .signup-btn {
-  background: white;
-  color: #ff6b35;
   border: none;
   padding: 0.75rem 2rem;
   border-radius: 50px;
@@ -489,12 +512,29 @@
   gap: 0.5rem;
 }
 
+.login-btn {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.login-btn:hover {
+  background: white;
+  color: #ff6b35;
+  transform: translateY(-2px);
+}
+
+.signup-btn {
+  background: white;
+  color: #ff6b35;
+}
+
 .signup-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.signup-modal {
+.auth-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -508,17 +548,17 @@
   padding: 2rem;
 }
 
-.signup-modal .modal-content {
+.auth-modal .modal-content {
   background: var(--bg-color);
   border-radius: 12px;
-  max-width: 900px;
+  max-width: 500px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
 }
 
-.signup-modal .close-btn {
+.auth-modal .close-btn {
   position: absolute;
   top: 1rem;
   right: 1rem;
@@ -536,11 +576,11 @@
     align-items: stretch;
   }
   
-  .signup-cta {
+  .auth-cta {
     padding: 1.5rem;
   }
   
-  .signup-modal {
+  .auth-modal {
     padding: 1rem;
   }
 

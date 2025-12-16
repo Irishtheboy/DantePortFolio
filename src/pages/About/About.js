@@ -10,7 +10,7 @@ const About = () => {
     photos: 0,
     videos: 0
   });
-  const [aboutImage, setAboutImage] = useState('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=600&fit=crop');
+  const [aboutImage, setAboutImage] = useState('');
 
   const skills = [
     'Portrait Photography',

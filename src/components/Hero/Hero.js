@@ -29,11 +29,11 @@ const Hero = () => {
           const heroData = heroSnap.docs[0].data();
           setHeroImage(heroData.imageUrl);
         } else {
-          setHeroImage('https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800');
+          setHeroImage('');
         }
       } catch (error) {
         console.error('Error fetching stats:', error);
-        setHeroImage('https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800');
+        setHeroImage('');
       }
     };
     

@@ -35,30 +35,7 @@ const Gallery = () => {
       setImages(imageData);
     } catch (error) {
       console.error('Error fetching images:', error);
-      // Fallback demo data
-      setImages([
-        {
-          id: 1,
-          url: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800',
-          title: 'Portrait Session',
-          category: 'portrait',
-          likes: 45
-        },
-        {
-          id: 2,
-          url: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800',
-          title: 'Wedding Moments',
-          category: 'wedding',
-          likes: 67
-        },
-        {
-          id: 3,
-          url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
-          title: 'Nature Beauty',
-          category: 'landscape',
-          likes: 32
-        }
-      ]);
+      setImages([]);
     } finally {
       setLoading(false);
     }

@@ -284,7 +284,7 @@ const Admin = () => {
         originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : parseFloat(formData.price),
         presetCount: parseInt(formData.presetCount) || 1,
         fileUrl: fileUrl,
-        preview: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
+        preview: '',
         rating: 5.0,
         downloads: 0,
         fileSize: '2.5 MB',

@@ -5,7 +5,7 @@ import { db } from '../../firebase';
 import { User, Mail, Phone, MapPin, Lock, UserPlus } from 'lucide-react';
 import './CustomerSignup.css';
 
-const CustomerSignup = () => {
+const CustomerSignup = ({ onClose }) => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -57,6 +57,7 @@ const CustomerSignup = () => {
       await addDoc(collection(db, 'customers'), customerData);
       
       alert('Account created successfully! Welcome to KILLYDID Store!');
+      if (onClose) onClose();
       setFormData({
         firstName: '',
         lastName: '',

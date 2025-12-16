@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Heart, Star, Filter, Search, Plus, Minus, UserPlus } from 'lucide-react';
+import { ShoppingCart, Heart, Star, Filter, Search, Plus, Minus, UserPlus, LogIn } from 'lucide-react';
 import { collection, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
 import CustomerSignup from '../CustomerSignup/CustomerSignup';
+import CustomerLogin from '../CustomerLogin/CustomerLogin';
 import './MerchStore.css';
 
 const MerchStore = () => {
@@ -17,6 +18,7 @@ const MerchStore = () => {
   const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [showSignup, setShowSignup] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   const categories = ['all', 'apparel', 'accessories', 'prints', 'equipment'];
 
@@ -35,94 +37,8 @@ const MerchStore = () => {
       setProducts(productData);
     } catch (error) {
       console.error('Error fetching products:', error);
-      // Demo products
-      setProducts([
-        {
-          id: 1,
-          name: 'KILLYDID Signature Hoodie',
-          price: 899,
-          originalPrice: 1199,
-          category: 'apparel',
-          image: 'https://via.placeholder.com/400x400/000000/FFFFFF?text=KILLYDID+Hoodie',
-          images: ['https://via.placeholder.com/400x400/000000/FFFFFF?text=KILLYDID+Hoodie'],
-          description: 'Premium quality hoodie with embroidered KILLYDID logo',
-          sizes: ['S', 'M', 'L', 'XL', 'XXL'],
-          colors: ['Black', 'White', 'Grey'],
-          rating: 4.8,
-          reviews: 24,
-          inStock: true
-        },
-        {
-          id: 2,
-          name: 'Street Photography Print Set',
-          price: 450,
-          category: 'prints',
-          image: 'https://via.placeholder.com/400x400/333333/FFFFFF?text=Photo+Prints',
-          images: ['https://via.placeholder.com/400x400/333333/FFFFFF?text=Photo+Prints'],
-          description: 'Limited edition prints from the Broke Boys Collective era',
-          sizes: ['A4', 'A3', 'A2'],
-          colors: ['Original'],
-          rating: 4.9,
-          reviews: 18,
-          inStock: true
-        },
-        {
-          id: 3,
-          name: 'KILLYDID Camera Strap',
-          price: 299,
-          category: 'accessories',
-          image: 'https://via.placeholder.com/400x400/8B4513/FFFFFF?text=Camera+Strap',
-          images: ['https://via.placeholder.com/400x400/8B4513/FFFFFF?text=Camera+Strap'],
-          description: 'Custom leather camera strap with KILLYDID branding',
-          sizes: ['One Size'],
-          colors: ['Black', 'Brown'],
-          rating: 4.7,
-          reviews: 12,
-          inStock: true
-        },
-        {
-          id: 4,
-          name: 'KILLYDID T-Shirt',
-          price: 399,
-          category: 'apparel',
-          image: 'https://via.placeholder.com/400x400/FF6B35/FFFFFF?text=KILLYDID+Tee',
-          images: ['https://via.placeholder.com/400x400/FF6B35/FFFFFF?text=KILLYDID+Tee'],
-          description: 'Comfortable cotton t-shirt with street art design',
-          sizes: ['S', 'M', 'L', 'XL'],
-          colors: ['Black', 'White', 'Orange'],
-          rating: 4.6,
-          reviews: 31,
-          inStock: true
-        },
-        {
-          id: 5,
-          name: 'Photography Equipment Bag',
-          price: 1299,
-          category: 'equipment',
-          image: 'https://via.placeholder.com/400x400/2C2C2C/FFFFFF?text=Camera+Bag',
-          images: ['https://via.placeholder.com/400x400/2C2C2C/FFFFFF?text=Camera+Bag'],
-          description: 'Professional camera bag for street photography',
-          sizes: ['One Size'],
-          colors: ['Black', 'Grey'],
-          rating: 4.9,
-          reviews: 15,
-          inStock: true
-        },
-        {
-          id: 6,
-          name: 'KILLYDID Snapback Cap',
-          price: 249,
-          category: 'accessories',
-          image: 'https://via.placeholder.com/400x400/000000/FF6B35?text=KILLYDID+Cap',
-          images: ['https://via.placeholder.com/400x400/000000/FF6B35?text=KILLYDID+Cap'],
-          description: 'Embroidered snapback with KILLYDID logo',
-          sizes: ['One Size'],
-          colors: ['Black', 'White', 'Orange'],
-          rating: 4.5,
-          reviews: 22,
-          inStock: true
-        }
-      ]);
+      // No demo products - will load from Firebase
+      setProducts([]);
     }
   };
 
@@ -280,67 +196,83 @@ const MerchStore = () => {
           </div>
         </div>
 
-        <div className="signup-cta">
-          <h3>New to KILLYDID Store?</h3>
-          <p>Create an account for faster checkout and exclusive offers</p>
-          <button 
-            className="signup-btn"
-            onClick={() => setShowSignup(true)}
-          >
-            <UserPlus size={16} />
-            Create Account
-          </button>
+        <div className="auth-cta">
+          <h3>KILLYDID Store Account</h3>
+          <p>Sign in or create an account for faster checkout and exclusive offers</p>
+          <div className="auth-buttons">
+            <button 
+              className="login-btn"
+              onClick={() => setShowLogin(true)}
+            >
+              <LogIn size={16} />
+              Sign In
+            </button>
+            <button 
+              className="signup-btn"
+              onClick={() => setShowSignup(true)}
+            >
+              <UserPlus size={16} />
+              Create Account
+            </button>
+          </div>
         </div>
 
         <div className="products-grid">
-          {filteredProducts.map((product, index) => (
-            <motion.div
-              key={product.id}
-              className="product-card"
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              onClick={() => setSelectedProduct(product)}
-            >
-              <div className="product-image">
-                <img src={product.image} alt={product.name} />
-                <button
-                  className={`favorite-btn ${favorites.has(product.id) ? 'active' : ''}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleFavorite(product.id);
-                  }}
-                >
-                  <Heart size={16} fill={favorites.has(product.id) ? 'currentColor' : 'none'} />
-                </button>
-                {product.originalPrice && (
-                  <div className="sale-badge">SALE</div>
-                )}
-              </div>
-              
-              <div className="product-info">
-                <h3>{product.name}</h3>
-                <div className="product-rating">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      size={14}
-                      fill={i < Math.floor(product.rating) ? '#ffd700' : 'none'}
-                      color="#ffd700"
-                    />
-                  ))}
-                  <span>({product.reviews})</span>
-                </div>
-                <div className="product-price">
-                  <span className="current-price">R{product.price}</span>
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((product, index) => (
+              <motion.div
+                key={product.id}
+                className="product-card"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                onClick={() => setSelectedProduct(product)}
+              >
+                <div className="product-image">
+                  <img src={product.image} alt={product.name} />
+                  <button
+                    className={`favorite-btn ${favorites.has(product.id) ? 'active' : ''}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(product.id);
+                    }}
+                  >
+                    <Heart size={16} fill={favorites.has(product.id) ? 'currentColor' : 'none'} />
+                  </button>
                   {product.originalPrice && (
-                    <span className="original-price">R{product.originalPrice}</span>
+                    <div className="sale-badge">SALE</div>
                   )}
                 </div>
-              </div>
-            </motion.div>
-          ))}
+                
+                <div className="product-info">
+                  <h3>{product.name}</h3>
+                  <div className="product-rating">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        size={14}
+                        fill={i < Math.floor(product.rating) ? '#ffd700' : 'none'}
+                        color="#ffd700"
+                      />
+                    ))}
+                    <span>({product.reviews})</span>
+                  </div>
+                  <div className="product-price">
+                    <span className="current-price">R{product.price}</span>
+                    {product.originalPrice && (
+                      <span className="original-price">R{product.originalPrice}</span>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            ))
+          ) : (
+            <div className="empty-store">
+              <h3>Store Coming Soon</h3>
+              <p>Products will be added through the admin panel</p>
+            </div>
+          )}
         </div>
 
         {/* Shopping Cart */}
@@ -479,12 +411,28 @@ const MerchStore = () => {
           </div>
         )}
 
+        {/* Customer Login Modal */}
+        {showLogin && (
+          <div className="auth-modal" onClick={() => setShowLogin(false)}>
+            <div className="modal-content" onClick={e => e.stopPropagation()}>
+              <button className="close-btn" onClick={() => setShowLogin(false)}>×</button>
+              <CustomerLogin 
+                onClose={() => setShowLogin(false)}
+                onSwitchToSignup={() => {
+                  setShowLogin(false);
+                  setShowSignup(true);
+                }}
+              />
+            </div>
+          </div>
+        )}
+
         {/* Customer Signup Modal */}
         {showSignup && (
-          <div className="signup-modal" onClick={() => setShowSignup(false)}>
+          <div className="auth-modal" onClick={() => setShowSignup(false)}>
             <div className="modal-content" onClick={e => e.stopPropagation()}>
               <button className="close-btn" onClick={() => setShowSignup(false)}>×</button>
-              <CustomerSignup />
+              <CustomerSignup onClose={() => setShowSignup(false)} />
             </div>
           </div>
         )}
