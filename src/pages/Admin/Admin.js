@@ -31,6 +31,8 @@ const Admin = () => {
   const [galleryItems, setGalleryItems] = useState([]);
   const [videoItems, setVideoItems] = useState([]);
   const [presetItems, setPresetItems] = useState([]);
+  const [merchandiseItems, setMerchandiseItems] = useState([]);
+  const [orderItems, setOrderItems] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -42,7 +44,11 @@ const Admin = () => {
     presetCount: '',
     clientName: '',
     location: '',
-    dateTaken: ''
+    dateTaken: '',
+    name: '',
+    sizes: '',
+    colors: '',
+    inStock: true
   });
 
   useEffect(() => {
@@ -56,6 +62,10 @@ const Admin = () => {
       fetchVideoItems();
     } else if (activeTab === 'presets') {
       fetchPresetItems();
+    } else if (activeTab === 'merchandise') {
+      fetchMerchandiseItems();
+    } else if (activeTab === 'orders') {
+      fetchOrderItems();
     }
   }, [activeTab]);
 
@@ -98,6 +108,34 @@ const Admin = () => {
       setPresetItems(presetData);
     } catch (error) {
       console.error('Error fetching preset items:', error);
+    }
+  };
+
+  const fetchMerchandiseItems = async () => {
+    try {
+      const q = query(collection(db, 'merchandise'), orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const merchData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setMerchandiseItems(merchData);
+    } catch (error) {
+      console.error('Error fetching merchandise items:', error);
+    }
+  };
+
+  const fetchOrderItems = async () => {
+    try {
+      const q = query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const orderData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setOrderItems(orderData);
+    } catch (error) {
+      console.error('Error fetching order items:', error);
     }
   };
 
@@ -324,6 +362,20 @@ const Admin = () => {
           >
             <Image size={20} />
             Logo
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'merchandise' ? 'active' : ''}`}
+            onClick={() => setActiveTab('merchandise')}
+          >
+            <Package size={20} />
+            Merchandise
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'orders' ? 'active' : ''}`}
+            onClick={() => setActiveTab('orders')}
+          >
+            <Package size={20} />
+            Orders
           </button>
         </div>
 
@@ -905,6 +957,208 @@ const Admin = () => {
                 )}
               </button>
             </form>
+          )}
+
+          {activeTab === 'merchandise' && (
+            <>
+            <form className="upload-form glass" onSubmit={async (e) => {
+              e.preventDefault();
+              if (!formData.file || !formData.name || !formData.price) return;
+              
+              setUploading(true);
+              try {
+                const imageUrl = await uploadToCloudinary(formData.file);
+                
+                await addDoc(collection(db, 'merchandise'), {
+                  name: formData.name,
+                  description: formData.description,
+                  category: formData.category,
+                  price: parseFloat(formData.price),
+                  originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : null,
+                  image: imageUrl,
+                  sizes: formData.sizes.split(',').map(s => s.trim()),
+                  colors: formData.colors.split(',').map(c => c.trim()),
+                  inStock: formData.inStock,
+                  rating: 5.0,
+                  reviews: 0,
+                  createdAt: serverTimestamp()
+                });
+                
+                alert('Product added successfully!');
+                setFormData({ title: '', description: '', category: '', file: null, videoUrl: '', price: '', originalPrice: '', presetCount: '', clientName: '', location: '', dateTaken: '', name: '', sizes: '', colors: '', inStock: true });
+              } catch (error) {
+                alert('Error adding product.');
+              } finally {
+                setUploading(false);
+              }
+            }}>
+              <h2>Add New Product</h2>
+              
+              <div className="form-group">
+                <label>Product Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Description</label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  rows="3"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Category</label>
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">Select Category</option>
+                  <option value="apparel">Apparel</option>
+                  <option value="accessories">Accessories</option>
+                  <option value="prints">Prints</option>
+                  <option value="equipment">Equipment</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Price (ZAR)</label>
+                <input
+                  type="number"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleInputChange}
+                  step="0.01"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Original Price (Optional)</label>
+                <input
+                  type="number"
+                  name="originalPrice"
+                  value={formData.originalPrice}
+                  onChange={handleInputChange}
+                  step="0.01"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Sizes (comma separated)</label>
+                <input
+                  type="text"
+                  name="sizes"
+                  value={formData.sizes}
+                  onChange={handleInputChange}
+                  placeholder="S, M, L, XL"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Colors (comma separated)</label>
+                <input
+                  type="text"
+                  name="colors"
+                  value={formData.colors}
+                  onChange={handleInputChange}
+                  placeholder="Black, White, Grey"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Product Image</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  required
+                />
+              </div>
+
+              <button type="submit" className="btn-primary" disabled={uploading}>
+                {uploading ? (
+                  <div className="loading-spinner small"></div>
+                ) : (
+                  <>
+                    <Plus size={16} />
+                    Add Product
+                  </>
+                )}
+              </button>
+            </form>
+            
+            <div className="content-list">
+              <h3>Merchandise Items ({merchandiseItems.length})</h3>
+              <div className="items-grid">
+                {merchandiseItems.map(item => (
+                  <div key={item.id} className="item-card">
+                    <img src={item.image} alt={item.name} />
+                    <div className="item-info">
+                      <h4>{item.name}</h4>
+                      <span className="item-category">{item.category}</span>
+                      <div className="item-price">R{item.price}</div>
+                    </div>
+                    <button 
+                      className="delete-item-btn"
+                      onClick={async () => {
+                        if (window.confirm('Delete this product?')) {
+                          await deleteDoc(doc(db, 'merchandise', item.id));
+                          fetchMerchandiseItems();
+                        }
+                      }}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+            </>
+          )}
+
+          {activeTab === 'orders' && (
+            <div className="orders-list">
+              <h2>Store Orders ({orderItems.length})</h2>
+              {orderItems.length === 0 ? (
+                <p>No orders yet.</p>
+              ) : (
+                orderItems.map((order) => (
+                  <div key={order.id} className="order-card glass">
+                    <div className="order-header">
+                      <h3>Order #{order.id.slice(-6)}</h3>
+                      <span className="order-status">{order.status}</span>
+                    </div>
+                    <div className="order-items">
+                      {order.items?.map((item, index) => (
+                        <div key={index} className="order-item">
+                          <span>{item.name} x{item.quantity}</span>
+                          <span>R{item.price * item.quantity}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="order-total">
+                      <strong>Total: R{order.total}</strong>
+                    </div>
+                    <div className="order-date">
+                      Ordered: {order.createdAt?.toDate().toLocaleDateString()}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           )}
         </motion.div>
       </div>

@@ -11,6 +11,7 @@ import Entry from './components/Entry/Entry';
 import Home from './pages/Home/Home';
 import Portfolio from './pages/Portfolio/Portfolio';
 import About from './pages/About/About';
+import MerchStore from './components/MerchStore/MerchStore';
 import Admin from './pages/Admin/Admin';
 import Footer from './components/Footer/Footer';
 import './App.css';
@@ -49,6 +50,7 @@ function App() {
                 <Route path="/home" element={<Home />} />
                 <Route path="/portfolio" element={<Portfolio />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/store" element={<MerchStore />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="*" element={<Entry />} />
               </Routes>

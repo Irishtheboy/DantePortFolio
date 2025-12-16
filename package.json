@@ -1,7 +1,6 @@
 {
   "name": "dantekillstorm-portfolio",
   "version": "1.0.0",
-
   "description": "Modern portfolio website for photographer and videographer DANTEKILLSTORM",
   "author": "DANTEKILLSTORM",
   "keywords": [
@@ -13,6 +12,8 @@
   ],
   "private": true,
   "dependencies": {
+    "@stripe/react-stripe-js": "^5.4.1",
+    "@stripe/stripe-js": "^8.5.3",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",

@@ -25,8 +25,8 @@ const Booking = () => {
   }, []);
 
   const services = [
-    { id: 'portrait', name: 'Portrait Photography', price: 81, duration: '2 hours', icon: Camera },
-    { id: 'wedding', name: 'Wedding Photography', price: 432, duration: 'Full day', icon: Camera },
+    { id: 'portrait', name: 'Portrait Photography', price: 700, duration: '1 hours', icon: Camera },
+    { id: 'wedding', name: 'Wedding Photography', price: 1500, duration: '3 hours', icon: Camera },
     { id: 'event', name: 'Event Photography', price: 189, duration: '4 hours', icon: Camera },
     { id: 'video-shoot', name: 'Video Production', price: 270, duration: '6 hours', icon: Video },
     { id: 'video-edit', name: 'Video Editing Only', price: 108, duration: '3-5 days', icon: Video }
