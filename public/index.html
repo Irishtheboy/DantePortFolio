@@ -21,6 +21,12 @@
     <meta name="twitter:description" content="Professional photographer and videographer specializing in authentic visual narratives." />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <script type="text/javascript">
+      // Force HTTPS redirect
+      if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+        location.replace('https:' + window.location.href.substring(window.location.protocol.length));
+      }
+    </script>
+    <script type="text/javascript">
       (function(l) {
         if (l.search[1] === '/' ) {
           var decoded = l.search.slice(1).split('&').map(function(s) { 

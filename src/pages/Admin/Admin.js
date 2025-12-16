@@ -4,7 +4,7 @@ import { collection, addDoc, serverTimestamp, getDocs, orderBy, query, deleteDoc
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { db, auth } from '../../firebase';
 import { uploadToCloudinary } from '../../cloudinary';
-import { Upload, Image, Video, Plus, LogOut, Mail, Calendar, Trash2, Package } from 'lucide-react';
+import { Upload, Image, Video, Plus, LogOut, Mail, Calendar, Trash2, Package, User } from 'lucide-react';
 import Login from '../../components/Login/Login';
 import './Admin.css';
 
@@ -33,6 +33,7 @@ const Admin = () => {
   const [presetItems, setPresetItems] = useState([]);
   const [merchandiseItems, setMerchandiseItems] = useState([]);
   const [orderItems, setOrderItems] = useState([]);
+  const [customerItems, setCustomerItems] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -66,6 +67,8 @@ const Admin = () => {
       fetchMerchandiseItems();
     } else if (activeTab === 'orders') {
       fetchOrderItems();
+    } else if (activeTab === 'customers') {
+      fetchCustomerItems();
     }
   }, [activeTab]);
 
@@ -136,6 +139,20 @@ const Admin = () => {
       setOrderItems(orderData);
     } catch (error) {
       console.error('Error fetching order items:', error);
+    }
+  };
+
+  const fetchCustomerItems = async () => {
+    try {
+      const q = query(collection(db, 'customers'), orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const customerData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setCustomerItems(customerData);
+    } catch (error) {
+      console.error('Error fetching customer items:', error);
     }
   };
 
@@ -376,6 +393,13 @@ const Admin = () => {
           >
             <Package size={20} />
             Orders
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'customers' ? 'active' : ''}`}
+            onClick={() => setActiveTab('customers')}
+          >
+            <User size={20} />
+            Customers
           </button>
         </div>
 
@@ -1157,6 +1181,35 @@ const Admin = () => {
                     </div>
                   </div>
                 ))
+              )}
+            </div>
+          )}
+
+          {activeTab === 'customers' && (
+            <div className="customers-list">
+              <h2>Store Customers ({customerItems.length})</h2>
+              {customerItems.length === 0 ? (
+                <p>No customers registered yet.</p>
+              ) : (
+                <div className="customers-grid">
+                  {customerItems.map((customer) => (
+                    <div key={customer.id} className="customer-card glass">
+                      <div className="customer-header">
+                        <h3>{customer.firstName} {customer.lastName}</h3>
+                        <span className="customer-status">{customer.status}</span>
+                      </div>
+                      <div className="customer-info">
+                        <p><strong>Email:</strong> {customer.email}</p>
+                        <p><strong>Phone:</strong> {customer.phone}</p>
+                        <p><strong>Address:</strong> {customer.address}, {customer.city}, {customer.province} {customer.postalCode}</p>
+                        <p><strong>Newsletter:</strong> {customer.newsletter ? 'Subscribed' : 'Not subscribed'}</p>
+                      </div>
+                      <div className="customer-date">
+                        Joined: {customer.createdAt?.toDate().toLocaleDateString()}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           )}

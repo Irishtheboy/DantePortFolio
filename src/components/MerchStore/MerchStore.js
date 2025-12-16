@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Heart, Star, Filter, Search, Plus, Minus } from 'lucide-react';
+import { ShoppingCart, Heart, Star, Filter, Search, Plus, Minus, UserPlus } from 'lucide-react';
 import { collection, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
+import CustomerSignup from '../CustomerSignup/CustomerSignup';
 import './MerchStore.css';
 
 const MerchStore = () => {
@@ -15,6 +16,7 @@ const MerchStore = () => {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
+  const [showSignup, setShowSignup] = useState(false);
 
   const categories = ['all', 'apparel', 'accessories', 'prints', 'equipment'];
 
@@ -278,6 +280,18 @@ const MerchStore = () => {
           </div>
         </div>
 
+        <div className="signup-cta">
+          <h3>New to KILLYDID Store?</h3>
+          <p>Create an account for faster checkout and exclusive offers</p>
+          <button 
+            className="signup-btn"
+            onClick={() => setShowSignup(true)}
+          >
+            <UserPlus size={16} />
+            Create Account
+          </button>
+        </div>
+
         <div className="products-grid">
           {filteredProducts.map((product, index) => (
             <motion.div
@@ -461,6 +475,16 @@ const MerchStore = () => {
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Customer Signup Modal */}
+        {showSignup && (
+          <div className="signup-modal" onClick={() => setShowSignup(false)}>
+            <div className="modal-content" onClick={e => e.stopPropagation()}>
+              <button className="close-btn" onClick={() => setShowSignup(false)}>×</button>
+              <CustomerSignup />
             </div>
           </div>
         )}
