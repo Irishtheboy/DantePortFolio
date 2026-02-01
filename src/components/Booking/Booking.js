@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase';
-import { MapPin, Camera, Video, Clock } from 'lucide-react';
-import { detectUserCurrency, formatPrice } from '../../utils/currency';
-import { sendEmailNotification } from '../../utils/emailService';
+import { MapPin, Clock, AlertCircle, CheckCircle, Camera, Video, Users, Heart } from 'lucide-react';
 import './Booking.css';
 
 const Booking = () => {
@@ -13,41 +11,154 @@ const Booking = () => {
     email: '',
     phone: '',
     service: '',
-    location: '',
     date: '',
+    timeSlot: '',
+    location: '',
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [userCurrency, setUserCurrency] = useState('USD');
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
 
-  useEffect(() => {
-    setUserCurrency(detectUserCurrency());
-  }, []);
-
+  // Services data
   const services = [
-    { id: 'portrait', name: 'Portrait Photography', price: 700, duration: '1 hours', icon: Camera },
-    { id: 'wedding', name: 'Wedding Photography', price: 1500, duration: '3 hours', icon: Camera },
-    { id: 'event', name: 'Event Photography', price: 189, duration: '4 hours', icon: Camera },
-    { id: 'video-shoot', name: 'Video Production', price: 270, duration: '6 hours', icon: Video },
-    { id: 'video-edit', name: 'Video Editing Only', price: 108, duration: '3-5 days', icon: Video }
+    {
+      id: 'portrait',
+      name: 'Portrait Photography',
+      description: 'Professional portrait sessions for individuals and families',
+      duration: 2,
+      icon: Camera
+    },
+    {
+      id: 'wedding',
+      name: 'Wedding Photography',
+      description: 'Complete wedding day coverage with professional editing',
+      duration: 8,
+      icon: Heart
+    },
+    {
+      id: 'event',
+      name: 'Event Photography',
+      description: 'Corporate events, parties, and special occasions',
+      duration: 4,
+      icon: Users
+    },
+    {
+      id: 'video',
+      name: 'Video Production',
+      description: 'Professional video production and editing services',
+      duration: 6,
+      icon: Video
+    }
   ];
 
+  // Location options
   const locations = [
-    'Kuilsriver (Base Location)',
-    'Cape Town CBD',
-    'Stellenbosch',
-    'Paarl',
-    'Somerset West',
-    'Bellville',
-    'Durbanville',
+    'Studio (Kuilsriver)',
+    'Client Location (Cape Town)',
+    'Outdoor Location (Cape Town)',
+    'Beach Location',
+    'Mountain Location',
+    'Urban Location',
     'Other (Specify in message)'
   ];
 
+  // Time slots
+  const timeSlots = [
+    { id: '09:00', label: '9:00 AM', value: '09:00' },
+    { id: '11:00', label: '11:00 AM', value: '11:00' },
+    { id: '13:00', label: '1:00 PM', value: '13:00' },
+    { id: '15:00', label: '3:00 PM', value: '15:00' },
+    { id: '17:00', label: '5:00 PM', value: '17:00' }
+  ];
+
+  // Fetch available slots when date and service change
+  useEffect(() => {
+    if (formData.date && formData.service) {
+      fetchAvailableSlots(formData.date, formData.service);
+    }
+  }, [formData.date, formData.service]);
+
+  const fetchAvailableSlots = async (date, serviceId) => {
+    setLoadingSlots(true);
+    try {
+      const q = query(
+        collection(db, 'bookings'),
+        where('date', '==', date),
+        where('status', '!=', 'cancelled')
+      );
+      const snapshot = await getDocs(q);
+      const bookedSlots = snapshot.docs.map(doc => doc.data().timeSlot);
+      
+      const service = services.find(s => s.id === serviceId);
+      const serviceDuration = service?.duration || 1;
+      
+      const updatedSlots = timeSlots.map(slot => ({
+        ...slot,
+        disabled: isSlotUnavailable(slot.value, bookedSlots, serviceDuration)
+      }));
+      
+      setAvailableSlots(updatedSlots);
+    } catch (error) {
+      console.error('Error fetching available slots:', error);
+      setAvailableSlots(timeSlots.map(slot => ({ ...slot, disabled: false })));
+    } finally {
+      setLoadingSlots(false);
+    }
+  };
+
+  const isSlotUnavailable = (slotTime, bookedSlots, duration) => {
+    // Check if this slot or any slots within the duration are booked
+    const slotHour = parseInt(slotTime.split(':')[0]);
+    for (let i = 0; i < duration; i += 2) { // Assuming 2-hour blocks
+      const checkHour = slotHour + i;
+      const checkTime = `${checkHour.toString().padStart(2, '0')}:00`;
+      if (bookedSlots.includes(checkTime)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const getMinDate = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split('T')[0];
+  };
+
+  const getMaxDate = () => {
+    const maxDate = new Date();
+    maxDate.setMonth(maxDate.getMonth() + 3); // 3 months ahead
+    return maxDate.toISOString().split('T')[0];
+  };
+
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
+  };
+
+  const openWhatsApp = (message) => {
+    const phoneNumber = '+27691588938'; // Dante's WhatsApp number
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+  };
+
+  const handleDirectWhatsApp = () => {
+    const message = `Hi Dante! I'd like to book a ${formData.service ? services.find(s => s.id === formData.service)?.name : 'photography'} session. Here are my details:
+
+Name: ${formData.name || '[Your Name]'}
+Email: ${formData.email || '[Your Email]'}
+Phone: ${formData.phone || '[Your Phone]'}
+Preferred Date: ${formData.date || '[Date]'}
+Location: ${formData.location || '[Location]'}
+Message: ${formData.message || '[Additional details]'}
+
+Please let me know your availability and pricing. Thanks!`;
+    
+    openWhatsApp(message);
   };
 
   const handleSubmit = async (e) => {
@@ -56,25 +167,31 @@ const Booking = () => {
     
     try {
       const selectedService = services.find(s => s.id === formData.service);
-      
       const bookingData = {
         ...formData,
         serviceName: selectedService?.name,
-        servicePrice: formatPrice(selectedService?.price, userCurrency),
+        serviceDuration: selectedService?.duration,
         createdAt: serverTimestamp(),
         status: 'pending'
       };
       
       await addDoc(collection(db, 'bookings'), bookingData);
       
-      // Send email notification
-      await sendEmailNotification('booking', bookingData);
+      alert('Booking request sent successfully! We\'ll be in touch soon to confirm your session.');
       
-      alert('Booking request sent successfully! Dante will contact you within 24 hours.');
       setFormData({
-        name: '', email: '', phone: '', service: '', location: '', date: '', message: ''
+        name: '',
+        email: '',
+        phone: '',
+        service: '',
+        date: '',
+        timeSlot: '',
+        location: '',
+        message: ''
       });
+      setAvailableSlots([]);
     } catch (error) {
+      console.error('Error sending booking request:', error);
       alert('Error sending booking request. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -103,25 +220,38 @@ const Booking = () => {
 
         <div className="booking-content">
           <motion.div
-            className="pricing-section"
+            className="services-section"
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h3>Services & Pricing</h3>
+            <h3>Services Available</h3>
             <div className="services-grid">
               {services.map((service) => (
                 <div key={service.id} className="service-card glass">
                   <service.icon size={24} className="service-icon" />
                   <h4>{service.name}</h4>
-                  <div className="service-price">{formatPrice(service.price, userCurrency)}</div>
+                  <p className="service-description">{service.description}</p>
                   <div className="service-duration">
                     <Clock size={14} />
-                    {service.duration}
+                    {service.duration > 0 ? `${service.duration} hour${service.duration > 1 ? 's' : ''}` : 'Flexible timing'}
                   </div>
                 </div>
               ))}
+            </div>
+            <div className="pricing-info">
+              <div className="custom-pricing-card glass">
+                <h4>Custom Pricing</h4>
+                <p>All services are quoted individually based on your specific needs, location, and requirements.</p>
+                <button 
+                  className="btn-primary whatsapp-btn"
+                  onClick={() => openWhatsApp('Hi Dante! I\'d like to get a custom quote for your photography/videography services. Could you please provide pricing information?')}
+                >
+                  <span>💬</span>
+                  Get Quote on WhatsApp
+                </button>
+              </div>
             </div>
           </motion.div>
 
@@ -181,7 +311,7 @@ const Booking = () => {
                     <option value="">Select Service</option>
                     {services.map(service => (
                       <option key={service.id} value={service.id}>
-                        {service.name} - {formatPrice(service.price, userCurrency)}
+                        {service.name}
                       </option>
                     ))}
                   </select>
@@ -193,10 +323,98 @@ const Booking = () => {
                     name="date"
                     value={formData.date}
                     onChange={handleChange}
+                    min={getMinDate()}
+                    max={getMaxDate()}
                     required
                   />
                 </div>
               </div>
+
+              {/* Time Slot Selection */}
+              {formData.service && formData.date && services.find(s => s.id === formData.service)?.duration > 0 && (
+                <div className="form-group">
+                  <label className="time-slot-label">
+                    <Clock size={16} />
+                    Available Time Slots
+                    {loadingSlots && <span className="loading-text">Checking availability...</span>}
+                    {!loadingSlots && availableSlots.length > 0 && (
+                      <span className={`availability-summary ${
+                        availableSlots.filter(slot => !slot.disabled).length === 0 ? 'no-slots' :
+                        availableSlots.filter(slot => !slot.disabled).length <= 3 ? 'limited' : ''
+                      }`}>
+                        {availableSlots.filter(slot => !slot.disabled).length} of {availableSlots.length} slots available
+                      </span>
+                    )}
+                  </label>
+                  
+                  {loadingSlots ? (
+                    <div className="time-slots-loading">
+                      <div className="loading-spinner"></div>
+                      <span>Checking available times...</span>
+                    </div>
+                  ) : availableSlots.length > 0 ? (
+                    <>
+                      <div className="time-slots-grid">
+                        {availableSlots.map(slot => (
+                          <label 
+                            key={slot.id} 
+                            className={`time-slot-option ${slot.disabled ? 'disabled' : ''}`}
+                          >
+                            <input
+                              type="radio"
+                              name="timeSlot"
+                              value={slot.value}
+                              checked={formData.timeSlot === slot.value}
+                              onChange={handleChange}
+                              disabled={slot.disabled}
+                              required
+                            />
+                            <span className={`time-slot-button ${slot.disabled ? 'disabled' : ''}`}>
+                              {slot.label}
+                              {slot.disabled && <span className="unavailable-text">Booked</span>}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                      
+                      <div className="time-slots-legend">
+                        <div className="legend-item">
+                          <div className="legend-color available"></div>
+                          <span>Available</span>
+                        </div>
+                        <div className="legend-item">
+                          <div className="legend-color booked"></div>
+                          <span>Already Booked</span>
+                        </div>
+                      </div>
+                      
+                      {availableSlots.filter(slot => !slot.disabled).length === 0 && (
+                        <div className="fully-booked-day">
+                          <AlertCircle size={20} />
+                          <span>This date is fully booked. All time slots are unavailable.</span>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="no-slots-available">
+                      <AlertCircle size={20} />
+                      <span>No available time slots for this date. Please select another date.</span>
+                    </div>
+                  )}
+                  
+                  {formData.service && services.find(s => s.id === formData.service) && (
+                    <div className="service-duration-info">
+                      <CheckCircle size={16} />
+                      <span>
+                        Duration: {services.find(s => s.id === formData.service)?.duration} hour(s)
+                        {services.find(s => s.id === formData.service)?.duration > 1 && 
+                          ' - This will block consecutive time slots'
+                        }
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
 
               <div className="form-group">
                 <label>Shoot Location</label>
@@ -231,8 +449,20 @@ const Booking = () => {
                 className="btn-primary submit-btn"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Sending...' : 'Request Booking'}
+                {isSubmitting ? 'Sending...' : 'Book & Get Custom Quote'}
               </button>
+              
+              <div className="whatsapp-direct">
+                <p>Or contact directly for immediate response:</p>
+                <button 
+                  type="button"
+                  className="btn-secondary whatsapp-direct-btn"
+                  onClick={handleDirectWhatsApp}
+                >
+                  <span>💬</span>
+                  WhatsApp Dante
+                </button>
+              </div>
             </form>
           </motion.div>
         </div>

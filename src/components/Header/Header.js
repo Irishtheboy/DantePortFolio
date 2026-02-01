@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Camera, Moon, Sun } from 'lucide-react';
+import { Menu, X, Camera, Moon, Sun, Facebook, Twitter, Instagram, Maximize2, Grid3X3 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
@@ -39,11 +39,12 @@ const Header = () => {
   }, []);
 
   const navItems = [
-    { path: '/', label: 'Home' },
-    { path: '/portfolio', label: 'Portfolio' },
-    { path: '/about', label: 'About' },
-    { path: '/store', label: 'Store' },
-    { path: '/admin', label: 'Admin' },
+    { path: '/', label: 'HOME' },
+    { path: '/store', label: 'PRINTS' },
+    { path: '/portfolio', label: 'GALLERY' },
+    
+    { path: '/booking', label: 'BOOKING' },
+    
   ];
 
   return (
@@ -55,7 +56,9 @@ const Header = () => {
     >
       <div className="header-container">
         <Link to="/" className="logo">
-          <img src={`${process.env.PUBLIC_URL}/logo.png`} alt="DANTEKILLSTORM" className="logo-image" />
+          <div className="logo-icon">
+            <Camera size={24} />
+          </div>
         </Link>
 
         <nav className={`nav ${isOpen ? 'nav-open' : ''}`}>
@@ -69,10 +72,19 @@ const Header = () => {
               {item.label}
             </Link>
           ))}
-          <button className="theme-toggle" onClick={toggleTheme}>
-            {isDark ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
         </nav>
+
+        <div className="header-actions">
+          <button className="action-btn" aria-label="Fullscreen">
+            <Maximize2 size={18} />
+          </button>
+          <button className="action-btn" aria-label="Grid View">
+            <Grid3X3 size={18} />
+          </button>
+          <button className="theme-toggle" onClick={toggleTheme}>
+            {isDark ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+        </div>
 
         <button 
           className="menu-toggle"

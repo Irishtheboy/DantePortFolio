@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { collection, getDocs, orderBy, query, deleteDoc, doc, updateDoc, increment } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { db, auth } from '../../firebase';
-import { Eye, Heart, Trash2, Search, Share2, Download, ZoomIn, Grid, List } from 'lucide-react';
+import { Eye, Heart, Trash2, Search, Share2, Download, ZoomIn, Grid, List, X, Camera, Image as ImageIcon, Star } from 'lucide-react';
 import { GallerySkeleton } from '../LoadingSkeleton/LoadingSkeleton';
 import './Gallery.css';
 
@@ -16,7 +16,7 @@ const Gallery = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [favorites, setFavorites] = useState(new Set());
   const [viewMode, setViewMode] = useState('grid');
-  const [sortBy, setSortBy] = useState('newest');
+  const [stats, setStats] = useState({ total: 0, categories: 0, favorites: 0 });
 
   useEffect(() => {
     fetchImages();
@@ -33,6 +33,16 @@ const Gallery = () => {
         ...doc.data()
       }));
       setImages(imageData);
+      
+      // Calculate stats
+      const categories = [...new Set(imageData.map(img => img.category).filter(Boolean))];
+      const totalFavorites = imageData.reduce((sum, img) => sum + (img.likes || 0), 0);
+      
+      setStats({
+        total: imageData.length,
+        categories: categories.length,
+        favorites: totalFavorites
+      });
     } catch (error) {
       console.error('Error fetching images:', error);
       setImages([]);
@@ -60,15 +70,7 @@ const Gallery = () => {
       searchTerm === '' || 
       img.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       img.description?.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .sort((a, b) => {
-      switch(sortBy) {
-        case 'oldest': return new Date(a.createdAt?.toDate()) - new Date(b.createdAt?.toDate());
-        case 'popular': return (b.likes || 0) - (a.likes || 0);
-        case 'title': return a.title.localeCompare(b.title);
-        default: return new Date(b.createdAt?.toDate()) - new Date(a.createdAt?.toDate());
-      }
-    });
+    );
 
   const toggleFavorite = async (imageId) => {
     const newFavorites = new Set(favorites);
@@ -105,119 +107,119 @@ const Gallery = () => {
   };
 
   if (loading) {
-    return <GallerySkeleton />;
+    return (
+      <div className="gallery-loading">
+        <div className="loading-spinner"></div>
+      </div>
+    );
   }
 
   return (
-    <section className="gallery" id="portfolio-section">
-      <div className="gallery-container">
-        <motion.div
-          className="gallery-header"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <h2 className="section-title gradient-text">Portfolio Gallery</h2>
-          <p className="section-subtitle">
-           This is a collection of street art with visual appeal ranging from professional settings to raw, underground environments.
-          </p>
-        </motion.div>
+    <div className="gallery-page">
+      {/* Left Content Section */}
+      <motion.div
+        className="gallery-content"
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        <div className="gallery-header">
+          <h1 className="gallery-title">
+            PHOTOGRAPHY<span className="gradient-text">GALLERY</span>
+          </h1>
+          <p className="gallery-subtitle">Visual Stories & Creative Moments</p>
+        </div>
 
-        <motion.div
-          className="gallery-controls"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          viewport={{ once: true }}
-        >
-          <div className="search-bar">
-            <Search size={20} />
+        <div className="gallery-description">
+          <p>
+            Explore a curated collection of my finest work. Each image tells a unique story, 
+            captured through my lens and crafted with passion for visual storytelling.
+          </p>
+        </div>
+
+        <div className="gallery-stats">
+          <div className="stat-item">
+            <ImageIcon size={24} />
+            <span>{stats.total} Images</span>
+          </div>
+          <div className="stat-item">
+            <Camera size={24} />
+            <span>{stats.categories} Categories</span>
+          </div>
+          <div className="stat-item">
+            <Heart size={24} />
+            <span>{stats.favorites} Likes</span>
+          </div>
+        </div>
+
+        <div className="gallery-controls">
+          <div className="search-container">
+            <Search size={18} />
             <input
               type="text"
               placeholder="Search images..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
             />
           </div>
           
-          <div className="gallery-filters">
+          <div className="filter-tabs">
             {categories.map(category => (
               <button
                 key={category}
-                className={`filter-btn ${filter === category ? 'active' : ''}`}
+                className={`filter-tab ${filter === category ? 'active' : ''}`}
                 onClick={() => setFilter(category)}
               >
-                {category.charAt(0).toUpperCase() + category.slice(1)}
+                {category.toUpperCase()}
               </button>
             ))}
           </div>
-          
-          <div className="view-controls">
-            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-              <option value="newest">Newest First</option>
-              <option value="oldest">Oldest First</option>
-              <option value="popular">Most Popular</option>
-              <option value="title">Title A-Z</option>
-            </select>
-            
-            <button 
-              className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
-              onClick={() => setViewMode('grid')}
-            >
-              <Grid size={16} />
-            </button>
-            <button 
-              className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
-              onClick={() => setViewMode('list')}
-            >
-              <List size={16} />
-            </button>
-          </div>
-        </motion.div>
+        </div>
+      </motion.div>
 
-        {filteredImages.length === 0 ? (
-          <motion.div
-            className="empty-gallery"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <p>No images found in this category.</p>
-            {user && <p>Upload some images through the admin panel to get started!</p>}
-          </motion.div>
-        ) : (
-          <motion.div
-            className={`gallery-${viewMode}`}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            viewport={{ once: true }}
-          >
-            {filteredImages.map((image, index) => (
-              <motion.div
-                key={image.id}
-                className="gallery-item"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -10 }}
-                onClick={() => setSelectedImage(image)}
-              >
-                <div className="stack">
-                  <div className="card">
-                    <img src={image.url} alt={image.title} />
+      {/* Right Visual Section */}
+      <motion.div
+        className="gallery-visual"
+        initial={{ opacity: 0, x: 50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+      >
+        <div className="gallery-grid-container">
+          {filteredImages.length === 0 ? (
+            <div className="empty-state">
+              <ImageIcon size={48} />
+              <p>No images found.</p>
+              {user && <p>Upload images through the admin panel to get started.</p>}
+            </div>
+          ) : (
+            <div className="gallery-grid">
+              {filteredImages.slice(0, 9).map((image, index) => (
+                <motion.div
+                  key={image.id}
+                  className="gallery-item"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.05 }}
+                  onClick={() => setSelectedImage(image)}
+                >
+                  <div className="image-container">
+                    <img
+                      src={image.url || image.imageUrl}
+                      alt={image.title}
+                      className="gallery-image"
+                      loading="lazy"
+                      onError={(e) => {
+                        console.error('Gallery image failed to load:', image.url || image.imageUrl);
+                        e.target.style.display = 'none';
+                      }}
+                    />
                     <div className="image-overlay">
                       <div className="image-info">
-                        <h3>{image.title}</h3>
-                        {image.clientName && <p className="image-client">{image.clientName}</p>}
-                        {image.location && <p className="image-location">{image.location}</p>}
-                        <div className="image-stats">
-                          <span><Eye size={16} /> View</span>
-                          <span><Heart size={16} /> {image.likes || 0}</span>
-                        </div>
+                        <h3 className="image-title">{image.title}</h3>
+                        {image.category && (
+                          <p className="image-category">{image.category}</p>
+                        )}
                       </div>
                       <div className="image-actions">
                         <button 
@@ -238,15 +240,6 @@ const Gallery = () => {
                         >
                           <Share2 size={16} />
                         </button>
-                        <button 
-                          className="action-btn"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedImage(image);
-                          }}
-                        >
-                          <ZoomIn size={16} />
-                        </button>
                         {user && (
                           <button 
                             className="action-btn delete-btn"
@@ -261,63 +254,94 @@ const Gallery = () => {
                       </div>
                     </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
-
-        {selectedImage && (
-          <div className="lightbox" onClick={() => setSelectedImage(null)}>
-            <div className="lightbox-content" onClick={e => e.stopPropagation()}>
-              <img src={selectedImage.url} alt={selectedImage.title} />
-              <div className="lightbox-info">
-                <h3>{selectedImage.title}</h3>
-                <p>{selectedImage.description}</p>
-                <div className="lightbox-actions">
-                  <button onClick={() => toggleFavorite(selectedImage.id)}>
-                    <Heart size={16} fill={favorites.has(selectedImage.id) ? 'currentColor' : 'none'} />
-                    {selectedImage.likes || 0}
-                  </button>
-                  <button onClick={() => shareImage(selectedImage)}>
-                    <Share2 size={16} /> Share
-                  </button>
-                  <a href={selectedImage.url} download target="_blank" rel="noopener noreferrer">
-                    <Download size={16} /> Download
-                  </a>
-                </div>
-              </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+          
+          {filteredImages.length > 9 && (
+            <div className="view-all-btn">
               <button 
-                className="lightbox-close"
-                onClick={() => setSelectedImage(null)}
-              >
-                ×
-              </button>
-              <button 
-                className="lightbox-nav prev"
+                className="btn-primary"
                 onClick={() => {
-                  const currentIndex = filteredImages.findIndex(img => img.id === selectedImage.id);
-                  const prevIndex = currentIndex > 0 ? currentIndex - 1 : filteredImages.length - 1;
-                  setSelectedImage(filteredImages[prevIndex]);
+                  // Show all images in lightbox or expand view
+                  setSelectedImage(filteredImages[0]);
                 }}
               >
-                ‹
-              </button>
-              <button 
-                className="lightbox-nav next"
-                onClick={() => {
-                  const currentIndex = filteredImages.findIndex(img => img.id === selectedImage.id);
-                  const nextIndex = currentIndex < filteredImages.length - 1 ? currentIndex + 1 : 0;
-                  setSelectedImage(filteredImages[nextIndex]);
-                }}
-              >
-                ›
+                View All {filteredImages.length} Images
               </button>
             </div>
+          )}
+        </div>
+      </motion.div>
+
+      {/* Lightbox */}
+      {selectedImage && (
+        <div className="lightbox" onClick={() => setSelectedImage(null)}>
+          <div className="lightbox-content" onClick={e => e.stopPropagation()}>
+            <img 
+              src={selectedImage.url || selectedImage.imageUrl} 
+              alt={selectedImage.title} 
+              className="lightbox-image"
+            />
+            <div className="lightbox-info">
+              <h3>{selectedImage.title}</h3>
+              {selectedImage.description && <p>{selectedImage.description}</p>}
+              <div className="lightbox-actions">
+                <button 
+                  className={`lightbox-btn ${favorites.has(selectedImage.id) ? 'favorited' : ''}`}
+                  onClick={() => toggleFavorite(selectedImage.id)}
+                >
+                  <Heart size={16} fill={favorites.has(selectedImage.id) ? 'currentColor' : 'none'} />
+                  {selectedImage.likes || 0}
+                </button>
+                <button 
+                  className="lightbox-btn"
+                  onClick={() => shareImage(selectedImage)}
+                >
+                  <Share2 size={16} /> Share
+                </button>
+                <a 
+                  href={selectedImage.url || selectedImage.imageUrl} 
+                  download 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="lightbox-btn"
+                >
+                  <Download size={16} /> Download
+                </a>
+              </div>
+            </div>
+            <button 
+              className="lightbox-close"
+              onClick={() => setSelectedImage(null)}
+            >
+              <X size={24} />
+            </button>
+            <button 
+              className="lightbox-nav prev"
+              onClick={() => {
+                const currentIndex = filteredImages.findIndex(img => img.id === selectedImage.id);
+                const prevIndex = currentIndex > 0 ? currentIndex - 1 : filteredImages.length - 1;
+                setSelectedImage(filteredImages[prevIndex]);
+              }}
+            >
+              ‹
+            </button>
+            <button 
+              className="lightbox-nav next"
+              onClick={() => {
+                const currentIndex = filteredImages.findIndex(img => img.id === selectedImage.id);
+                const nextIndex = currentIndex < filteredImages.length - 1 ? currentIndex + 1 : 0;
+                setSelectedImage(filteredImages[nextIndex]);
+              }}
+            >
+              ›
+            </button>
           </div>
-        )}
-      </div>
-    </section>
+        </div>
+      )}
+    </div>
   );
 };
 

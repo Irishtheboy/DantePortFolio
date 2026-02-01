@@ -1,27 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowDown, Play, Camera, Video } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Camera, Heart, Star, MapPin } from 'lucide-react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
 import './Hero.css';
 
 const Hero = () => {
-  const [stats, setStats] = useState({ projects: 0, videos: 0, experience: 5 });
+  const navigate = useNavigate();
+  const [stats, setStats] = useState({ clients: 0, sessions: 0, experience: 5 });
   const [heroImage, setHeroImage] = useState(null);
   const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [gallerySnap, videosSnap, heroSnap] = await Promise.all([
+        const [gallerySnap, videosSnap, bookingsSnap, heroSnap] = await Promise.all([
           getDocs(collection(db, 'gallery')),
           getDocs(collection(db, 'videos')),
+          getDocs(collection(db, 'bookings')),
           getDocs(collection(db, 'hero'))
         ]);
         
         setStats({
-          projects: gallerySnap.size,
-          videos: videosSnap.size,
+          clients: Math.floor((gallerySnap.size + videosSnap.size) / 3), // Estimate clients
+          sessions: gallerySnap.size + videosSnap.size,
           experience: 5
         });
         
@@ -40,8 +43,12 @@ const Hero = () => {
     fetchStats();
   }, []);
 
-  const scrollToPortfolio = () => {
-    document.getElementById('portfolio-section')?.scrollIntoView({ behavior: 'smooth' });
+  const handleBookSession = () => {
+    navigate('/booking');
+  };
+
+  const handleViewWork = () => {
+    navigate('/portfolio');
   };
 
   const handleImageLoad = () => {
@@ -50,53 +57,37 @@ const Hero = () => {
 
   return (
     <section className="hero">
+      <div className="hero-overlay"></div>
+      
       <motion.div
         className="hero-content"
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <div className="trend-label">KillyDidIt</div>
         <h1 className="hero-title">
-          DANTEKILLSTORM<br/>
-          <span className="gradient-text">Visual Storyteller</span><br/>
-          & Creative Director
+          Creative Photography<br/>
+          Studio
         </h1>
-        <p className="hero-description">
-          Welcome to my creative universe. I capture extraordinary moments through photography 
-          and videography, creating compelling visual narratives that resonate with audiences worldwide.
+        
+        <p className="hero-subtitle">
+          Cum et labore appareat, te est nostrum eligendi adipisci. Tota quas habeo eu vel. Vel autem<br/>
+          aperiam primis.
         </p>
         
-        <div className="hero-stats">
-          <div className="stat">
-            <span className="stat-number">{stats.projects}+</span>
-            <span className="stat-label">Projects</span>
-          </div>
-          <div className="stat">
-            <span className="stat-number">{stats.videos}+</span>
-            <span className="stat-label">Videos</span>
-          </div>
-          <div className="stat">
-            <span className="stat-number">{stats.experience}</span>
-            <span className="stat-label">Years Experience</span>
-          </div>
+        <div className="hero-buttons">
+          <button className="btn-hero" onClick={handleBookSession}>
+            Find More
+          </button>
         </div>
-        
-        <button className="btn-primary" onClick={scrollToPortfolio}>
-          VIEW PORTFOLIO
-        </button>
-        
-        <div className="deco-lines-bottom"></div>
       </motion.div>
 
       <motion.div
-        className="hero-visual"
-        initial={{ opacity: 0, x: 50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
+        className="hero-image-container"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1, delay: 0.3 }}
       >
-        <div className="pattern-dots hero-dots-bg"></div>
-        <div className="deco-yellow-block"></div>
         {!imageLoaded && (
           <div className="hero-image-loading">
             <div className="loading-spinner"></div>
@@ -105,14 +96,22 @@ const Hero = () => {
         {heroImage && (
           <img 
             src={heroImage} 
-            alt="DANTEKILLSTORM Photography" 
-            className={`main-img ${imageLoaded ? 'loaded' : ''}`}
+            alt="KillyDidShootIt Photography Studio" 
+            className={`hero-image ${imageLoaded ? 'loaded' : ''}`}
             onLoad={handleImageLoad}
             style={{ opacity: imageLoaded ? 1 : 0 }}
           />
         )}
-        <div className="deco-black-rect"></div>
+        <div className="hero-image-overlay"></div>
       </motion.div>
+
+      {/* Navigation Arrows */}
+      <button className="hero-nav hero-nav-prev" aria-label="Previous">
+        <span>‹</span>
+      </button>
+      <button className="hero-nav hero-nav-next" aria-label="Next">
+        <span>›</span>
+      </button>
     </section>
   );
 };

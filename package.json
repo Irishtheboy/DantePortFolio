@@ -1,12 +1,15 @@
 {
-  "name": "dantekillstorm-portfolio",
+  "name": "killydidshootit-studio",
   "version": "1.0.0",
-  "description": "Modern portfolio website for photographer and videographer DANTEKILLSTORM",
-  "author": "DANTEKILLSTORM",
+  "description": "Creative Photography Studio - KillyDidShootIt specializing in weddings, portraits, and events",
+  "author": "KillyDidShootIt",
   "keywords": [
     "photography",
-    "videography",
-    "portfolio",
+    "studio",
+    "creative",
+    "weddings",
+    "portraits",
+    "events",
     "react",
     "firebase"
   ],

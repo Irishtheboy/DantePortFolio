@@ -1,6 +1,6 @@
 {
-  "short_name": "KillyDidShootit",
-  "name": "DANTEKILLSTORM Portfolio - KillyDidShootit",
+  "short_name": "KillyDidShootIt",
+  "name": "KillyDidShootIt - Creative Photography Studio",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,7 +20,7 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#ffc20e",
+  "theme_color": "#000000",
   "background_color": "#ffffff",
-  "description": "Professional photographer and videographer portfolio showcasing authentic visual narratives"
+  "description": "Creative Photography Studio specializing in weddings, portraits, and events. Professional photography services in Cape Town, South Africa."
 }

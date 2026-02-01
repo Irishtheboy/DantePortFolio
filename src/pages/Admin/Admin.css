@@ -408,3 +408,339 @@
     gap: 0.5rem;
   }
 }
+/* Enhanced Booking Management Styles */
+.bookings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.booking-stats {
+  display: flex;
+  gap: 1rem;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background: rgba(255, 194, 14, 0.1);
+  border: 1px solid rgba(255, 194, 14, 0.3);
+  border-radius: 8px;
+  min-width: 80px;
+}
+
+.stat-number {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-mustard);
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--color-text-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.empty-bookings {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem;
+  color: var(--color-text-gray);
+  text-align: center;
+}
+
+.bookings-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.booking-card {
+  padding: 1.5rem;
+  border-radius: 12px;
+  border-left: 4px solid #e0e0e0;
+  transition: all 0.3s ease;
+}
+
+.booking-card.pending {
+  border-left-color: #ff9800;
+  background: rgba(255, 152, 0, 0.05);
+}
+
+.booking-card.confirmed {
+  border-left-color: #4caf50;
+  background: rgba(76, 175, 80, 0.05);
+}
+
+.booking-card.completed {
+  border-left-color: #2196f3;
+  background: rgba(33, 150, 243, 0.05);
+}
+
+.booking-card.cancelled {
+  border-left-color: #f44336;
+  background: rgba(244, 67, 54, 0.05);
+}
+
+.booking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.booking-service h3 {
+  margin: 0 0 0.25rem 0;
+  color: var(--color-black);
+  font-size: 1.1rem;
+}
+
+.booking-price {
+  font-weight: 600;
+  color: var(--color-mustard);
+  font-size: 1rem;
+}
+
+.status-select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.status-select.pending {
+  color: #ff9800;
+  border-color: #ff9800;
+}
+
+.status-select.confirmed {
+  color: #4caf50;
+  border-color: #4caf50;
+}
+
+.status-select.completed {
+  color: #2196f3;
+  border-color: #2196f3;
+}
+
+.status-select.cancelled {
+  color: #f44336;
+  border-color: #f44336;
+}
+
+.booking-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.client-info p {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+  color: var(--color-text-gray);
+}
+
+.booking-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.booking-datetime,
+.booking-location {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--color-text-gray);
+}
+
+.booking-datetime svg,
+.booking-location svg {
+  color: var(--color-mustard);
+  flex-shrink: 0;
+}
+
+.duration-info {
+  font-size: 0.8rem;
+  color: var(--color-mustard);
+  font-weight: 500;
+}
+
+.booking-message {
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.booking-message p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--color-text-gray);
+}
+
+.booking-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.booking-date {
+  font-size: 0.8rem;
+  color: var(--color-text-gray);
+}
+
+.delete-booking-btn {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-booking-btn:hover {
+  background: #d32f2f;
+  transform: scale(1.05);
+}
+
+/* Dark theme support */
+[data-theme="dark"] .booking-card {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .booking-card.pending {
+  background: rgba(255, 152, 0, 0.1);
+}
+
+[data-theme="dark"] .booking-card.confirmed {
+  background: rgba(76, 175, 80, 0.1);
+}
+
+[data-theme="dark"] .booking-card.completed {
+  background: rgba(33, 150, 243, 0.1);
+}
+
+[data-theme="dark"] .booking-card.cancelled {
+  background: rgba(244, 67, 54, 0.1);
+}
+
+[data-theme="dark"] .status-select {
+  background: #2d2d2d;
+  border-color: #444;
+  color: #ccc;
+}
+
+[data-theme="dark"] .booking-message {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .booking-footer {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .bookings-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .booking-stats {
+    justify-content: space-around;
+  }
+  
+  .stat-card {
+    min-width: 60px;
+    padding: 0.75rem;
+  }
+  
+  .booking-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  
+  .booking-info {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .booking-datetime,
+  .booking-location {
+    flex-wrap: wrap;
+  }
+  
+  .booking-footer {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 480px) {
+  .booking-stats {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .stat-card {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .booking-card {
+    padding: 1rem;
+  }
+}
+/* Updated Booking Display */
+.booking-service-desc {
+  font-size: 0.8rem;
+  color: var(--color-text-gray);
+  margin: 0.25rem 0;
+  line-height: 1.3;
+}
+
+.booking-custom-price {
+  font-size: 0.9rem;
+  color: var(--color-mustard);
+  font-weight: 600;
+  background: rgba(255, 194, 14, 0.1);
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+.booking-price {
+  display: none; /* Hide any remaining price displays */
+}
+
+[data-theme="dark"] .booking-service-desc {
+  color: #ccc;
+}
+
+[data-theme="dark"] .booking-custom-price {
+  background: rgba(255, 194, 14, 0.2);
+}

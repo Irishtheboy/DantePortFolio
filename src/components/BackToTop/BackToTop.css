@@ -2,8 +2,8 @@
   position: fixed;
   bottom: 2rem;
   right: 2rem;
-  background: var(--color-mustard);
-  color: var(--color-black);
+  background: var(--color-black);
+  color: var(--color-white);
   border: none;
   border-radius: 50%;
   width: 50px;
@@ -16,7 +16,7 @@
   visibility: hidden;
   transform: translateY(20px);
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(255, 194, 14, 0.4);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   z-index: 1000;
 }
 
@@ -28,5 +28,5 @@
 
 .back-to-top:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 194, 14, 0.6);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }

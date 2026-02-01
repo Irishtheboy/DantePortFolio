@@ -21,14 +21,14 @@ const CalendarBooking = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const services = [
-    { id: 'portrait', name: 'Portrait Photography', duration: 2, price: 'R2160' },
-    { id: 'wedding', name: 'Wedding Photography', duration: 8, price: 'R11520' },
-    { id: 'event', name: 'Event Photography', duration: 4, price: 'R5040' },
-    { id: 'video', name: 'Video Production', duration: 6, price: 'R7200' }
+    { id: 'portrait', name: 'Portrait Photography', },
+    { id: 'wedding', name: 'Wedding Photography', },
+    { id: 'event', name: 'Event Photography',  },
+    { id: 'video', name: 'Video Production',  }
   ];
 
   const timeSlots = [
-    '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'
+    '09:00'
   ];
 
   useEffect(() => {

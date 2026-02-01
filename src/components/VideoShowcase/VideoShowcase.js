@@ -109,7 +109,7 @@ const VideoShowcase = () => {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <h2 className="section-title gradient-text">Video Projects</h2>
+          <h2 className="section-title">VIDEOS</h2>
           <p className="section-subtitle">
             Cinematic storytelling through motion and emotion
           </p>
@@ -194,7 +194,7 @@ const VideoShowcase = () => {
         >
           <h3>Ready to create something amazing?</h3>
           <p>Let's bring your vision to life with professional video production</p>
-          <a href="#contact" className="btn-primary">
+          <a href="/booking" className="btn-primary">
             Start Your Project
           </a>
         </motion.div>

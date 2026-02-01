@@ -4,7 +4,7 @@ import { collection, addDoc, serverTimestamp, getDocs, orderBy, query, deleteDoc
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { db, auth } from '../../firebase';
 import { uploadToCloudinary } from '../../cloudinary';
-import { Upload, Image, Video, Plus, LogOut, Mail, Calendar, Trash2, Package, User } from 'lucide-react';
+import { Upload, Image, Video, Plus, LogOut, Mail, Calendar, Trash2, Package, User, Clock, MapPin } from 'lucide-react';
 import Login from '../../components/Login/Login';
 import './Admin.css';
 
@@ -796,33 +796,124 @@ const Admin = () => {
 
           {activeTab === 'bookings' && (
             <div className="bookings-list">
-              <h2>Booking Requests</h2>
-              {bookings.length === 0 ? (
-                <p>No booking requests yet.</p>
-              ) : (
-                bookings.map((booking) => (
-                  <div key={booking.id} className="booking-card glass">
-                    <div className="booking-header">
-                      <h3>{booking.serviceName}</h3>
-                      <span className="booking-price">{booking.servicePrice}</span>
-                    </div>
-                    <div className="booking-info">
-                      <p><strong>Client:</strong> {booking.name}</p>
-                      <p><strong>Email:</strong> {booking.email}</p>
-                      <p><strong>Phone:</strong> {booking.phone}</p>
-                      <p><strong>Date:</strong> {booking.date}</p>
-                      <p><strong>Location:</strong> {booking.location}</p>
-                    </div>
-                    {booking.message && (
-                      <div className="booking-message">
-                        <p><strong>Details:</strong> {booking.message}</p>
-                      </div>
-                    )}
-                    <div className="booking-date">
-                      Requested: {booking.createdAt?.toDate().toLocaleDateString()}
-                    </div>
+              <div className="bookings-header">
+                <h2>Booking Management</h2>
+                <div className="booking-stats">
+                  <div className="stat-card">
+                    <span className="stat-number">{bookings.filter(b => b.status === 'pending').length}</span>
+                    <span className="stat-label">Pending</span>
                   </div>
-                ))
+                  <div className="stat-card">
+                    <span className="stat-number">{bookings.filter(b => b.status === 'confirmed').length}</span>
+                    <span className="stat-label">Confirmed</span>
+                  </div>
+                  <div className="stat-card">
+                    <span className="stat-number">{bookings.filter(b => b.status === 'completed').length}</span>
+                    <span className="stat-label">Completed</span>
+                  </div>
+                </div>
+              </div>
+              
+              {bookings.length === 0 ? (
+                <div className="empty-bookings">
+                  <Calendar size={48} />
+                  <p>No booking requests yet.</p>
+                </div>
+              ) : (
+                <div className="bookings-grid">
+                  {bookings.map((booking) => (
+                    <div key={booking.id} className={`booking-card glass ${booking.status}`}>
+                      <div className="booking-header">
+                        <div className="booking-service">
+                          <h3>{booking.serviceName}</h3>
+                          {booking.serviceDescription && (
+                            <p className="booking-service-desc">{booking.serviceDescription}</p>
+                          )}
+                          <span className="booking-custom-price">Custom Quote Required</span>
+                        </div>
+                        <div className="booking-status">
+                          <select
+                            value={booking.status || 'pending'}
+                            onChange={async (e) => {
+                              try {
+                                await updateDoc(doc(db, 'bookings', booking.id), {
+                                  status: e.target.value
+                                });
+                                fetchBookings(); // Refresh the list
+                              } catch (error) {
+                                console.error('Error updating booking status:', error);
+                              }
+                            }}
+                            className={`status-select ${booking.status || 'pending'}`}
+                          >
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                          </select>
+                        </div>
+                      </div>
+                      
+                      <div className="booking-info">
+                        <div className="client-info">
+                          <p><strong>Client:</strong> {booking.name}</p>
+                          <p><strong>Email:</strong> {booking.email}</p>
+                          <p><strong>Phone:</strong> {booking.phone}</p>
+                        </div>
+                        
+                        <div className="booking-details">
+                          <div className="booking-datetime">
+                            <Calendar size={16} />
+                            <span>{booking.date}</span>
+                            {booking.timeSlot && (
+                              <>
+                                <Clock size={16} />
+                                <span>{booking.timeSlot}</span>
+                                {booking.serviceDuration > 0 && (
+                                  <span className="duration-info">
+                                    ({booking.serviceDuration}h duration)
+                                  </span>
+                                )}
+                              </>
+                            )}
+                          </div>
+                          
+                          <div className="booking-location">
+                            <MapPin size={16} />
+                            <span>{booking.location}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {booking.message && (
+                        <div className="booking-message">
+                          <p><strong>Details:</strong> {booking.message}</p>
+                        </div>
+                      )}
+                      
+                      <div className="booking-footer">
+                        <div className="booking-date">
+                          Requested: {booking.createdAt?.toDate().toLocaleDateString()}
+                        </div>
+                        <button
+                          className="delete-booking-btn"
+                          onClick={async () => {
+                            if (window.confirm('Are you sure you want to delete this booking?')) {
+                              try {
+                                await deleteDoc(doc(db, 'bookings', booking.id));
+                                fetchBookings();
+                              } catch (error) {
+                                console.error('Error deleting booking:', error);
+                              }
+                            }
+                          }}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           )}

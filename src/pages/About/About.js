@@ -18,8 +18,6 @@ const About = () => {
     'Event Coverage',
     'Video Production',
     'Video Editing',
-    'Drone Photography',
-    'Studio Lighting',
     'Post-Processing'
   ];
 

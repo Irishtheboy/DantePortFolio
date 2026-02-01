@@ -160,8 +160,8 @@
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: var(--color-mustard);
-  background: rgba(255, 194, 14, 0.05);
+  border-color: var(--color-black);
+  background: rgba(0, 0, 0, 0.02);
 }
 
 .form-group textarea {
@@ -255,5 +255,615 @@
   .submit-btn {
     padding: 1.25rem 2rem;
     font-size: 1.1rem;
+  }
+}
+/* Time Slot Selection Styles */
+.time-slot-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: var(--color-black);
+  margin-bottom: 1rem;
+}
+
+.loading-text {
+  font-size: 0.9rem;
+  color: var(--color-mustard);
+  font-weight: 500;
+  margin-left: 0.5rem;
+}
+
+.time-slots-loading {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  text-align: center;
+  color: var(--color-text-gray);
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  border: 1px dashed var(--color-dark-grey);
+}
+
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e0e0e0;
+  border-top: 2px solid var(--color-mustard);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.time-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.time-slot-option {
+  position: relative;
+  cursor: pointer;
+}
+
+.time-slot-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.time-slot-button {
+  display: block;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  color: var(--color-text-gray);
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.time-slot-option:hover .time-slot-button {
+  border-color: var(--color-black);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.time-slot-option input[type="radio"]:checked + .time-slot-button {
+  border-color: var(--color-mustard);
+  background: var(--color-mustard);
+  color: var(--color-black);
+  font-weight: 600;
+}
+
+.time-slot-option input[type="radio"]:disabled + .time-slot-button {
+  background: #f5f5f5;
+  color: #ccc;
+  border-color: #e0e0e0;
+  cursor: not-allowed;
+}
+
+.no-slots-available {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.3);
+  border-radius: 8px;
+  color: #d32f2f;
+  font-weight: 500;
+}
+
+.service-duration-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  border-radius: 8px;
+  color: #388e3c;
+  font-size: 0.9rem;
+  margin-top: 0.75rem;
+}
+
+/* Dark theme support */
+[data-theme="dark"] .booking {
+  background: #1a1a1a;
+}
+
+[data-theme="dark"] .time-slot-button {
+  background: #2d2d2d;
+  border-color: #444;
+  color: #ccc;
+}
+
+[data-theme="dark"] .time-slot-option:hover .time-slot-button {
+  border-color: var(--color-mustard);
+  background: rgba(255, 194, 14, 0.2);
+}
+
+[data-theme="dark"] .time-slot-option input[type="radio"]:checked + .time-slot-button {
+  background: var(--color-mustard);
+  color: var(--color-black);
+}
+
+[data-theme="dark"] .time-slots-loading {
+  background: rgba(255, 194, 14, 0.2);
+  border-color: var(--color-mustard);
+}
+
+[data-theme="dark"] .no-slots-available {
+  background: rgba(255, 0, 0, 0.2);
+  border-color: rgba(255, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .service-duration-info {
+  background: rgba(76, 175, 80, 0.2);
+  border-color: rgba(76, 175, 80, 0.4);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .time-slots-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.5rem;
+  }
+  
+  .time-slot-button {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .time-slots-loading {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.5rem;
+  }
+  
+  .no-slots-available,
+  .service-duration-info {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .time-slots-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .time-slot-button {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
+}
+/* Enhanced Time Slot Availability Styles */
+.time-slot-option.disabled {
+  cursor: not-allowed;
+}
+
+.time-slot-button.disabled {
+  background: #f5f5f5 !important;
+  color: #999 !important;
+  border-color: #e0e0e0 !important;
+  cursor: not-allowed !important;
+  position: relative;
+}
+
+[data-theme="dark"] .time-slot-button.disabled {
+  background: #2a2a2a !important;
+  color: #666 !important;
+  border-color: #333 !important;
+}
+
+.time-slot-option.disabled:hover .time-slot-button {
+  background: #f5f5f5 !important;
+  border-color: #e0e0e0 !important;
+  transform: none !important;
+}
+
+[data-theme="dark"] .time-slot-option.disabled:hover .time-slot-button {
+  background: #2a2a2a !important;
+  border-color: #333 !important;
+}
+
+.time-slot-option input[type="radio"]:disabled + .time-slot-button {
+  background: #f5f5f5 !important;
+  color: #999 !important;
+  border-color: #e0e0e0 !important;
+  cursor: not-allowed !important;
+}
+
+[data-theme="dark"] .time-slot-option input[type="radio"]:disabled + .time-slot-button {
+  background: #2a2a2a !important;
+  color: #666 !important;
+  border-color: #333 !important;
+}
+
+.unavailable-text {
+  display: block;
+  font-size: 0.7rem;
+  color: #f44336 !important;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+.fully-booked-day {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  background: rgba(255, 152, 0, 0.1);
+  border: 1px solid rgba(255, 152, 0, 0.3);
+  border-radius: 8px;
+  color: #f57c00;
+  font-weight: 500;
+  margin-top: 1rem;
+}
+
+[data-theme="dark"] .fully-booked-day {
+  background: rgba(255, 152, 0, 0.2);
+  border-color: rgba(255, 152, 0, 0.4);
+}
+
+/* Strikethrough effect for disabled slots */
+.time-slot-button.disabled::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: #f44336;
+  transform: translateY(-50%) rotate(-15deg);
+  opacity: 0.7;
+}
+
+/* Tooltip for disabled slots */
+.time-slot-option.disabled .time-slot-button:hover::before {
+  content: 'Already booked';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  z-index: 1000;
+  margin-bottom: 0.25rem;
+}
+
+[data-theme="dark"] .time-slot-option.disabled .time-slot-button:hover::before {
+  background: #666;
+}
+
+/* Mobile adjustments for disabled slots */
+@media (max-width: 768px) {
+  .unavailable-text {
+    font-size: 0.65rem;
+  }
+  
+  .fully-booked-day {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+  
+  .time-slot-option.disabled .time-slot-button:hover::before {
+    display: none; /* Hide tooltips on mobile */
+  }
+}
+/* Availability Summary */
+.availability-summary {
+  font-size: 0.8rem;
+  color: var(--color-text-gray);
+  font-weight: 500;
+  margin-left: auto;
+  padding: 0.25rem 0.75rem;
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  border-radius: 12px;
+}
+
+.time-slot-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* When no slots are available */
+.availability-summary.no-slots {
+  background: rgba(244, 67, 54, 0.1);
+  border-color: rgba(244, 67, 54, 0.3);
+  color: #f44336;
+}
+
+/* When partially booked */
+.availability-summary.limited {
+  background: rgba(255, 152, 0, 0.1);
+  border-color: rgba(255, 152, 0, 0.3);
+  color: #f57c00;
+}
+
+[data-theme="dark"] .availability-summary {
+  background: rgba(76, 175, 80, 0.2);
+  border-color: rgba(76, 175, 80, 0.4);
+}
+
+[data-theme="dark"] .availability-summary.no-slots {
+  background: rgba(244, 67, 54, 0.2);
+  border-color: rgba(244, 67, 54, 0.4);
+}
+
+[data-theme="dark"] .availability-summary.limited {
+  background: rgba(255, 152, 0, 0.2);
+  border-color: rgba(255, 152, 0, 0.4);
+}
+
+@media (max-width: 768px) {
+  .time-slot-label {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .availability-summary {
+    align-self: flex-end;
+    font-size: 0.75rem;
+  }
+}
+/* Time Slots Legend */
+.time-slots-legend {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  justify-content: center;
+}
+
+[data-theme="dark"] .time-slots-legend {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--color-text-gray);
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 2px solid;
+}
+
+.legend-color.available {
+  background: white;
+  border-color: #e0e0e0;
+}
+
+.legend-color.booked {
+  background: #f5f5f5;
+  border-color: #e0e0e0;
+  position: relative;
+}
+
+.legend-color.booked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: #f44336;
+  transform: translateY(-50%) rotate(-15deg);
+}
+
+[data-theme="dark"] .legend-color.available {
+  background: #2d2d2d;
+  border-color: #444;
+}
+
+[data-theme="dark"] .legend-color.booked {
+  background: #2a2a2a;
+  border-color: #333;
+}
+
+@media (max-width: 768px) {
+  .time-slots-legend {
+    gap: 1rem;
+    padding: 0.5rem;
+  }
+  
+  .legend-item {
+    font-size: 0.75rem;
+  }
+  
+  .legend-color {
+    width: 14px;
+    height: 14px;
+  }
+}
+/* Services Section Updates */
+.services-section h3 {
+  color: var(--color-black);
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.service-description {
+  font-size: 0.9rem;
+  color: var(--color-text-gray);
+  line-height: 1.4;
+  margin: 0.75rem 0;
+  text-align: center;
+}
+
+.service-price {
+  display: none; /* Hide any remaining price elements */
+}
+
+/* Custom Pricing Card */
+.pricing-info {
+  margin-top: 2rem;
+}
+
+.custom-pricing-card {
+  text-align: center;
+  padding: 2rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--color-mustard) 0%, #ffb800 100%);
+  color: var(--color-black);
+}
+
+.custom-pricing-card h4 {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--color-black);
+}
+
+.custom-pricing-card p {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+/* WhatsApp Buttons */
+.whatsapp-btn,
+.whatsapp-direct-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.whatsapp-btn {
+  background: #25d366;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-size: 1rem;
+}
+
+.whatsapp-btn:hover {
+  background: #128c7e;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+}
+
+.whatsapp-direct {
+  margin-top: 1.5rem;
+  text-align: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.whatsapp-direct p {
+  font-size: 0.9rem;
+  color: var(--color-text-gray);
+  margin-bottom: 1rem;
+}
+
+.whatsapp-direct-btn {
+  background: #25d366;
+  color: white;
+  border: 1px solid #25d366;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  width: 100%;
+}
+
+.whatsapp-direct-btn:hover {
+  background: #128c7e;
+  border-color: #128c7e;
+  transform: translateY(-2px);
+}
+
+/* WhatsApp Icon Styling */
+.whatsapp-btn span,
+.whatsapp-direct-btn span {
+  font-size: 1.2em;
+}
+
+/* Dark Theme Support */
+[data-theme="dark"] .custom-pricing-card {
+  background: linear-gradient(135deg, var(--color-mustard) 0%, #ffb800 100%);
+  color: var(--color-black);
+}
+
+[data-theme="dark"] .whatsapp-direct {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .service-description {
+  color: #ccc;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .custom-pricing-card {
+    padding: 1.5rem;
+  }
+  
+  .custom-pricing-card h4 {
+    font-size: 1.3rem;
+  }
+  
+  .whatsapp-btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .whatsapp-direct-btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .services-section h3 {
+    font-size: 1.5rem;
+  }
+  
+  .custom-pricing-card {
+    padding: 1rem;
+  }
+  
+  .service-description {
+    font-size: 0.85rem;
   }
 }
