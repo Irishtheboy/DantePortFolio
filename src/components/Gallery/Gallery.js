@@ -3,8 +3,7 @@ import { motion } from 'framer-motion';
 import { collection, getDocs, orderBy, query, deleteDoc, doc, updateDoc, increment } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { db, auth } from '../../firebase';
-import { Eye, Heart, Trash2, Search, Share2, Download, ZoomIn, Grid, List, X, Camera, Image as ImageIcon, Star } from 'lucide-react';
-import { GallerySkeleton } from '../LoadingSkeleton/LoadingSkeleton';
+import { Heart, Trash2, Search, Share2, Download, X, Camera, Image as ImageIcon } from 'lucide-react';
 import './Gallery.css';
 
 const Gallery = () => {
@@ -15,7 +14,6 @@ const Gallery = () => {
   const [user, setUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [favorites, setFavorites] = useState(new Set());
-  const [viewMode, setViewMode] = useState('grid');
   const [stats, setStats] = useState({ total: 0, categories: 0, favorites: 0 });
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Heart, Star, Filter, Search, Plus, Minus, UserPlus, LogIn } from 'lucide-react';
+import { ShoppingCart, Heart, Star, Search, Plus, Minus, UserPlus, LogIn } from 'lucide-react';
 import { collection, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
 import CustomerSignup from '../CustomerSignup/CustomerSignup';

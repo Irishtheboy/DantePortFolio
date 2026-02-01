@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Camera, Moon, Sun, Facebook, Twitter, Instagram, Maximize2, Grid3X3 } from 'lucide-react';
+import { Menu, X, Camera, Moon, Sun, Maximize2, Grid3X3 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
@@ -10,7 +10,6 @@ import './Header.css';
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [logoUrl, setLogoUrl] = useState(null);
   const { isDark, toggleTheme } = useTheme();
   const location = useLocation();
 
@@ -20,22 +19,6 @@ const Header = () => {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const fetchLogo = async () => {
-      try {
-        const logoSnap = await getDocs(collection(db, 'logo'));
-        if (!logoSnap.empty) {
-          const logoData = logoSnap.docs[0].data();
-          setLogoUrl(logoData.logoUrl);
-        }
-      } catch (error) {
-        console.error('Error fetching logo:', error);
-      }
-    };
-    
-    fetchLogo();
   }, []);
 
   const navItems = [

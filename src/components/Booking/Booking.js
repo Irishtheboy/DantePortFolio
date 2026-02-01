@@ -73,13 +73,7 @@ const Booking = () => {
   ];
 
   // Fetch available slots when date and service change
-  useEffect(() => {
-    if (formData.date && formData.service) {
-      fetchAvailableSlots(formData.date, formData.service);
-    }
-  }, [formData.date, formData.service]);
-
-  const fetchAvailableSlots = async (date, serviceId) => {
+  const fetchAvailableSlots = useCallback(async (date, serviceId) => {
     setLoadingSlots(true);
     try {
       const q = query(
@@ -105,7 +99,13 @@ const Booking = () => {
     } finally {
       setLoadingSlots(false);
     }
-  };
+  }, [services, timeSlots]);
+
+  useEffect(() => {
+    if (formData.date && formData.service) {
+      fetchAvailableSlots(formData.date, formData.service);
+    }
+  }, [formData.date, formData.service, fetchAvailableSlots]);
 
   const isSlotUnavailable = (slotTime, bookedSlots, duration) => {
     // Check if this slot or any slots within the duration are booked

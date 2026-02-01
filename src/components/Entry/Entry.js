@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Camera, Video, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -10,7 +10,6 @@ const Entry = () => {
   const [stats, setStats] = useState({ projects: 0, videos: 0, experience: 5 });
   const [heroImage, setHeroImage] = useState(null);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [dataLoaded, setDataLoaded] = useState(false);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -33,12 +32,9 @@ const Entry = () => {
         } else {
           setHeroImage('');
         }
-        
-        setDataLoaded(true);
       } catch (error) {
         console.error('Error fetching stats:', error);
         setHeroImage('');
-        setDataLoaded(true);
       }
     };
     

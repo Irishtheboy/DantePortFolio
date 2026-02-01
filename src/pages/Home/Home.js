@@ -102,10 +102,10 @@ const Home = () => {
     };
 
     fetchImages();
-  }, []);
+  }, [demoImages, gridSizes]);
 
-  const handleImageClick = (image) => {
-    // Navigate to gallery page with the selected image
+  const handleImageClick = () => {
+    // Navigate to gallery page
     navigate('/gallery');
   };
 
@@ -155,7 +155,7 @@ const Home = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                onClick={() => handleImageClick(image)}
+                onClick={handleImageClick}
               >
                 <div className="image-container">
                   <img
@@ -192,12 +192,12 @@ const Home = () => {
         <div className="side-nav-content">
           <span className="side-nav-text">NEXT</span>
           <div className="social-links">
-            <a href="#" className="social-link" aria-label="Instagram">
+            <button className="social-link" aria-label="Instagram">
               <Instagram size={16} />
-            </a>
-            <a href="#" className="social-link" aria-label="Twitter">
+            </button>
+            <button className="social-link" aria-label="Twitter">
               <Twitter size={16} />
-            </a>
+            </button>
           </div>
         </div>
       </div>
