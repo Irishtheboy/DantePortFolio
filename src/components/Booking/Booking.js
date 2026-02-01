@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { collection, addDoc, serverTimestamp, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase';
@@ -21,7 +21,7 @@ const Booking = () => {
   const [loadingSlots, setLoadingSlots] = useState(false);
 
   // Services data
-  const services = [
+  const services = useMemo(() => [
     {
       id: 'portrait',
       name: 'Portrait Photography',
@@ -50,7 +50,7 @@ const Booking = () => {
       duration: 6,
       icon: Video
     }
-  ];
+  ], []);
 
   // Location options
   const locations = [
@@ -64,13 +64,13 @@ const Booking = () => {
   ];
 
   // Time slots
-  const timeSlots = [
+  const timeSlots = useMemo(() => [
     { id: '09:00', label: '9:00 AM', value: '09:00' },
     { id: '11:00', label: '11:00 AM', value: '11:00' },
     { id: '13:00', label: '1:00 PM', value: '13:00' },
     { id: '15:00', label: '3:00 PM', value: '15:00' },
     { id: '17:00', label: '5:00 PM', value: '17:00' }
-  ];
+  ], []);
 
   // Fetch available slots when date and service change
   const fetchAvailableSlots = useCallback(async (date, serviceId) => {
