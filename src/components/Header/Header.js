@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Camera, Moon, Sun, Maximize2, Grid3X3 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../../firebase';
 import { useTheme } from '../../contexts/ThemeContext';
 import './Header.css';
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
@@ -12,10 +12,10 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
 
   // Grid size options for masonry layout
-  const gridSizes = ['small', 'medium', 'large', 'tall', 'square', 'medium-tall'];
+  const gridSizes = useMemo(() => ['small', 'medium', 'large', 'tall', 'square', 'medium-tall'], []);
 
   // Demo images as fallback
-  const demoImages = [
+  const demoImages = useMemo(() => [
     {
       id: 'demo-1',
       title: 'Portrait Session',
@@ -58,7 +58,7 @@ const Home = () => {
       imageUrl: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=700&fit=crop',
       size: 'medium-tall'
     }
-  ];
+  ], []);
 
   useEffect(() => {
     const fetchImages = async () => {
