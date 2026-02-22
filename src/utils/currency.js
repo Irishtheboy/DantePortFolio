@@ -68,7 +68,7 @@ export const detectUserCurrency = () => {
     
     return currency;
   } catch (error) {
-    return 'USD'; // Fallback to USD
+    return 'ZAR'; // Fallback to USD
   }
 };
 

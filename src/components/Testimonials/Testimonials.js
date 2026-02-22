@@ -31,7 +31,7 @@ const Testimonials = () => {
           role: 'Bride',
           rating: 5,
           text: 'DANTEKILLSTORM captured our wedding day perfectly. Every moment was beautifully documented.',
-          image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face'
+          image: ''
         },
         {
           id: 2,
@@ -39,7 +39,7 @@ const Testimonials = () => {
           role: 'CEO, TechCorp',
           rating: 5,
           text: 'Professional, creative, and delivered beyond our expectations. Highly recommended!',
-          image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face'
+          image: ''
         }
       ]);
     }

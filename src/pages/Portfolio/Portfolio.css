@@ -1,0 +1,24 @@
+.portfolio-page {
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+.portfolio-page .video-showcase {
+  border-top: 1px solid #f0f0f0;
+}
+
+.portfolio-page .calendar-booking {
+  border-top: 1px solid #f0f0f0;
+}
+
+/* Ensure consistent spacing between sections */
+.portfolio-page > * + * {
+  margin-top: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .portfolio-page {
+    padding-top: 0;
+  }
+}

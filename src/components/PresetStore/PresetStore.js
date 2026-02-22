@@ -40,7 +40,7 @@ const PresetStore = () => {
           originalPrice: 35,
           rating: 4.8,
           downloads: 1250,
-          preview: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
+          preview: '',
           category: 'Portrait',
           fileSize: '2.5 MB',
           presetCount: 12
@@ -53,7 +53,7 @@ const PresetStore = () => {
           originalPrice: 40,
           rating: 4.9,
           downloads: 890,
-          preview: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=300&fit=crop',
+          preview: '',
           category: 'Wedding',
           fileSize: '3.1 MB',
           presetCount: 15
@@ -66,7 +66,7 @@ const PresetStore = () => {
           originalPrice: 28,
           rating: 4.7,
           downloads: 2100,
-          preview: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
+          preview: '',
           category: 'Street',
           fileSize: '1.8 MB',
           presetCount: 10

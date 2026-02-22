@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Camera } from 'lucide-react';
+import { Menu, X, Camera, Moon, Sun, Maximize2, Grid3X3 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../../contexts/ThemeContext';
 import './Header.css';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { isDark, toggleTheme } = useTheme();
   const location = useLocation();
 
   useEffect(() => {
@@ -18,10 +20,12 @@ const Header = () => {
   }, []);
 
   const navItems = [
-    { path: '/', label: 'Home' },
-    { path: '/portfolio', label: 'Portfolio' },
-    { path: '/about', label: 'About' },
-    { path: '/admin', label: 'Admin' },
+    { path: '/', label: 'HOME' },
+    { path: '/store', label: 'PRINTS' },
+    { path: '/portfolio', label: 'GALLERY' },
+    
+    { path: '/booking', label: 'BOOKING' },
+    
   ];
 
   return (
@@ -33,8 +37,9 @@ const Header = () => {
     >
       <div className="header-container">
         <Link to="/" className="logo">
-          <Camera size={28} />
-          <span className="gradient-text">DANTEKILLSTORM</span>
+          <div className="logo-icon">
+            <Camera size={24} />
+          </div>
         </Link>
 
         <nav className={`nav ${isOpen ? 'nav-open' : ''}`}>
@@ -49,6 +54,18 @@ const Header = () => {
             </Link>
           ))}
         </nav>
+
+        <div className="header-actions">
+          <button className="action-btn" aria-label="Fullscreen">
+            <Maximize2 size={18} />
+          </button>
+          <button className="action-btn" aria-label="Grid View">
+            <Grid3X3 size={18} />
+          </button>
+          <button className="theme-toggle" onClick={toggleTheme}>
+            {isDark ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+        </div>
 
         <button 
           className="menu-toggle"

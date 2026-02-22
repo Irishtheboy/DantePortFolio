@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { collection, addDoc, serverTimestamp, getDocs, orderBy, query, deleteDoc, doc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { collection, addDoc, serverTimestamp, getDocs, orderBy, query, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { db, auth, storage } from '../../firebase';
-import { Upload, Image, Video, Plus, LogOut, Mail, Calendar, Trash2, Package } from 'lucide-react';
+import { db, auth } from '../../firebase';
+import { uploadToCloudinary } from '../../cloudinary';
+import { Upload, Image, Video, Plus, LogOut, Mail, Calendar, Trash2, Package, User, Clock, MapPin } from 'lucide-react';
 import Login from '../../components/Login/Login';
 import './Admin.css';
 
@@ -31,6 +31,9 @@ const Admin = () => {
   const [galleryItems, setGalleryItems] = useState([]);
   const [videoItems, setVideoItems] = useState([]);
   const [presetItems, setPresetItems] = useState([]);
+  const [merchandiseItems, setMerchandiseItems] = useState([]);
+  const [orderItems, setOrderItems] = useState([]);
+  const [customerItems, setCustomerItems] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -39,7 +42,14 @@ const Admin = () => {
     videoUrl: '',
     price: '',
     originalPrice: '',
-    presetCount: ''
+    presetCount: '',
+    clientName: '',
+    location: '',
+    dateTaken: '',
+    name: '',
+    sizes: '',
+    colors: '',
+    inStock: true
   });
 
   useEffect(() => {
@@ -53,6 +63,12 @@ const Admin = () => {
       fetchVideoItems();
     } else if (activeTab === 'presets') {
       fetchPresetItems();
+    } else if (activeTab === 'merchandise') {
+      fetchMerchandiseItems();
+    } else if (activeTab === 'orders') {
+      fetchOrderItems();
+    } else if (activeTab === 'customers') {
+      fetchCustomerItems();
     }
   }, [activeTab]);
 
@@ -95,6 +111,48 @@ const Admin = () => {
       setPresetItems(presetData);
     } catch (error) {
       console.error('Error fetching preset items:', error);
+    }
+  };
+
+  const fetchMerchandiseItems = async () => {
+    try {
+      const q = query(collection(db, 'merchandise'), orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const merchData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setMerchandiseItems(merchData);
+    } catch (error) {
+      console.error('Error fetching merchandise items:', error);
+    }
+  };
+
+  const fetchOrderItems = async () => {
+    try {
+      const q = query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const orderData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setOrderItems(orderData);
+    } catch (error) {
+      console.error('Error fetching order items:', error);
+    }
+  };
+
+  const fetchCustomerItems = async () => {
+    try {
+      const q = query(collection(db, 'customers'), orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const customerData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setCustomerItems(customerData);
+    } catch (error) {
+      console.error('Error fetching customer items:', error);
     }
   };
 
@@ -150,33 +208,26 @@ const Admin = () => {
 
     setUploading(true);
     try {
-      const formDataUpload = new FormData();
-      formDataUpload.append('file', formData.file);
-      formDataUpload.append('upload_preset', 'dante_portfolio');
-
-      const response = await fetch('https://api.cloudinary.com/v1_1/dlrxspk2c/image/upload', {
-        method: 'POST',
-        body: formDataUpload
-      });
-      
-      const result = await response.json();
-      const imageUrl = result.secure_url;
-
+      const imageUrl = await uploadToCloudinary(formData.file);
+        
       await addDoc(collection(db, 'gallery'), {
         title: formData.title,
         description: formData.description,
         category: formData.category,
         url: imageUrl,
+        clientName: formData.clientName,
+        location: formData.location,
+        dateTaken: formData.dateTaken,
         createdAt: serverTimestamp(),
         likes: 0
       });
 
       alert('Image uploaded successfully!');
-      setFormData({ title: '', description: '', category: '', file: null, videoUrl: '', price: '', originalPrice: '', presetCount: '' });
+      setFormData({ title: '', description: '', category: '', file: null, videoUrl: '', price: '', originalPrice: '', presetCount: '', clientName: '', location: '', dateTaken: '' });
       fetchGalleryItems();
     } catch (error) {
       console.error('Error uploading image:', error);
-      alert('Error uploading image. Please try again.');
+      alert(`Error uploading image: ${error.message}`);
     } finally {
       setUploading(false);
     }
@@ -192,9 +243,7 @@ const Admin = () => {
       
       // Upload thumbnail if provided
       if (formData.file) {
-        const thumbnailRef = ref(storage, `thumbnails/${Date.now()}_${formData.file.name}`);
-        const snapshot = await uploadBytes(thumbnailRef, formData.file);
-        thumbnailUrl = await getDownloadURL(snapshot.ref);
+        thumbnailUrl = await uploadToCloudinary(formData.file);
       }
 
       // Add to Firestore
@@ -225,9 +274,7 @@ const Admin = () => {
 
     setUploading(true);
     try {
-      const fileRef = ref(storage, `presets/${Date.now()}_${formData.file.name}`);
-      const snapshot = await uploadBytes(fileRef, formData.file);
-      const fileUrl = await getDownloadURL(snapshot.ref);
+      const fileUrl = await uploadToCloudinary(formData.file);
 
       await addDoc(collection(db, 'presets'), {
         title: formData.title,
@@ -237,7 +284,7 @@ const Admin = () => {
         originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : parseFloat(formData.price),
         presetCount: parseInt(formData.presetCount) || 1,
         fileUrl: fileUrl,
-        preview: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
+        preview: '',
         rating: 5.0,
         downloads: 0,
         fileSize: '2.5 MB',
@@ -312,6 +359,48 @@ const Admin = () => {
             <Calendar size={20} />
             Bookings
           </button>
+          <button
+            className={`tab-btn ${activeTab === 'hero' ? 'active' : ''}`}
+            onClick={() => setActiveTab('hero')}
+          >
+            <Image size={20} />
+            Hero Image
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'about' ? 'active' : ''}`}
+            onClick={() => setActiveTab('about')}
+          >
+            <Image size={20} />
+            About Image
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'logo' ? 'active' : ''}`}
+            onClick={() => setActiveTab('logo')}
+          >
+            <Image size={20} />
+            Logo
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'merchandise' ? 'active' : ''}`}
+            onClick={() => setActiveTab('merchandise')}
+          >
+            <Package size={20} />
+            Merchandise
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'orders' ? 'active' : ''}`}
+            onClick={() => setActiveTab('orders')}
+          >
+            <Package size={20} />
+            Orders
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'customers' ? 'active' : ''}`}
+            onClick={() => setActiveTab('customers')}
+          >
+            <User size={20} />
+            Customers
+          </button>
         </div>
 
         <motion.div
@@ -364,6 +453,38 @@ const Admin = () => {
               </div>
 
               <div className="form-group">
+                <label>Client/Event Name (Optional)</label>
+                <input
+                  type="text"
+                  name="clientName"
+                  value={formData.clientName || ''}
+                  onChange={handleInputChange}
+                  placeholder="e.g., John & Sarah Wedding, Corporate Event 2024"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Location (Optional)</label>
+                <input
+                  type="text"
+                  name="location"
+                  value={formData.location || ''}
+                  onChange={handleInputChange}
+                  placeholder="e.g., Cape Town, Johannesburg"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Date Taken (Optional)</label>
+                <input
+                  type="date"
+                  name="dateTaken"
+                  value={formData.dateTaken || ''}
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="form-group">
                 <label>Image File</label>
                 <input
                   type="file"
@@ -394,6 +515,8 @@ const Admin = () => {
                       <div className="item-info">
                         <h4>{item.title}</h4>
                         <span className="item-category">{item.category}</span>
+                        {item.clientName && <p className="item-client">{item.clientName}</p>}
+                        {item.location && <p className="item-location">{item.location}</p>}
                       </div>
                       <button 
                         className="delete-item-btn"
@@ -673,33 +796,511 @@ const Admin = () => {
 
           {activeTab === 'bookings' && (
             <div className="bookings-list">
-              <h2>Booking Requests</h2>
+              <div className="bookings-header">
+                <h2>Booking Management</h2>
+                <div className="booking-stats">
+                  <div className="stat-card">
+                    <span className="stat-number">{bookings.filter(b => b.status === 'pending').length}</span>
+                    <span className="stat-label">Pending</span>
+                  </div>
+                  <div className="stat-card">
+                    <span className="stat-number">{bookings.filter(b => b.status === 'confirmed').length}</span>
+                    <span className="stat-label">Confirmed</span>
+                  </div>
+                  <div className="stat-card">
+                    <span className="stat-number">{bookings.filter(b => b.status === 'completed').length}</span>
+                    <span className="stat-label">Completed</span>
+                  </div>
+                </div>
+              </div>
+              
               {bookings.length === 0 ? (
-                <p>No booking requests yet.</p>
+                <div className="empty-bookings">
+                  <Calendar size={48} />
+                  <p>No booking requests yet.</p>
+                </div>
               ) : (
-                bookings.map((booking) => (
-                  <div key={booking.id} className="booking-card glass">
-                    <div className="booking-header">
-                      <h3>{booking.serviceName}</h3>
-                      <span className="booking-price">{booking.servicePrice}</span>
-                    </div>
-                    <div className="booking-info">
-                      <p><strong>Client:</strong> {booking.name}</p>
-                      <p><strong>Email:</strong> {booking.email}</p>
-                      <p><strong>Phone:</strong> {booking.phone}</p>
-                      <p><strong>Date:</strong> {booking.date}</p>
-                      <p><strong>Location:</strong> {booking.location}</p>
-                    </div>
-                    {booking.message && (
-                      <div className="booking-message">
-                        <p><strong>Details:</strong> {booking.message}</p>
+                <div className="bookings-grid">
+                  {bookings.map((booking) => (
+                    <div key={booking.id} className={`booking-card glass ${booking.status}`}>
+                      <div className="booking-header">
+                        <div className="booking-service">
+                          <h3>{booking.serviceName}</h3>
+                          {booking.serviceDescription && (
+                            <p className="booking-service-desc">{booking.serviceDescription}</p>
+                          )}
+                          <span className="booking-custom-price">Custom Quote Required</span>
+                        </div>
+                        <div className="booking-status">
+                          <select
+                            value={booking.status || 'pending'}
+                            onChange={async (e) => {
+                              try {
+                                await updateDoc(doc(db, 'bookings', booking.id), {
+                                  status: e.target.value
+                                });
+                                fetchBookings(); // Refresh the list
+                              } catch (error) {
+                                console.error('Error updating booking status:', error);
+                              }
+                            }}
+                            className={`status-select ${booking.status || 'pending'}`}
+                          >
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                          </select>
+                        </div>
                       </div>
-                    )}
-                    <div className="booking-date">
-                      Requested: {booking.createdAt?.toDate().toLocaleDateString()}
+                      
+                      <div className="booking-info">
+                        <div className="client-info">
+                          <p><strong>Client:</strong> {booking.name}</p>
+                          <p><strong>Email:</strong> {booking.email}</p>
+                          <p><strong>Phone:</strong> {booking.phone}</p>
+                        </div>
+                        
+                        <div className="booking-details">
+                          <div className="booking-datetime">
+                            <Calendar size={16} />
+                            <span>{booking.date}</span>
+                            {booking.timeSlot && (
+                              <>
+                                <Clock size={16} />
+                                <span>{booking.timeSlot}</span>
+                                {booking.serviceDuration > 0 && (
+                                  <span className="duration-info">
+                                    ({booking.serviceDuration}h duration)
+                                  </span>
+                                )}
+                              </>
+                            )}
+                          </div>
+                          
+                          <div className="booking-location">
+                            <MapPin size={16} />
+                            <span>{booking.location}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {booking.message && (
+                        <div className="booking-message">
+                          <p><strong>Details:</strong> {booking.message}</p>
+                        </div>
+                      )}
+                      
+                      <div className="booking-footer">
+                        <div className="booking-date">
+                          Requested: {booking.createdAt?.toDate().toLocaleDateString()}
+                        </div>
+                        <button
+                          className="delete-booking-btn"
+                          onClick={async () => {
+                            if (window.confirm('Are you sure you want to delete this booking?')) {
+                              try {
+                                await deleteDoc(doc(db, 'bookings', booking.id));
+                                fetchBookings();
+                              } catch (error) {
+                                console.error('Error deleting booking:', error);
+                              }
+                            }
+                          }}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'hero' && (
+            <form className="upload-form glass" onSubmit={async (e) => {
+              e.preventDefault();
+              if (!formData.file) return;
+              
+              setUploading(true);
+              try {
+                const imageUrl = await uploadToCloudinary(formData.file);
+                
+                const heroCollection = collection(db, 'hero');
+                const heroSnap = await getDocs(heroCollection);
+                
+                if (heroSnap.empty) {
+                  await addDoc(heroCollection, { imageUrl });
+                } else {
+                  const heroDoc = heroSnap.docs[0];
+                  await updateDoc(doc(db, 'hero', heroDoc.id), { imageUrl });
+                }
+                
+                alert('Hero image updated successfully!');
+                setFormData({ title: '', description: '', category: '', file: null, videoUrl: '', price: '', originalPrice: '', presetCount: '' });
+              } catch (error) {
+                alert('Error updating hero image.');
+              } finally {
+                setUploading(false);
+              }
+            }}>
+              <h2>Update Hero Image</h2>
+              
+              <div className="form-group">
+                <label>Hero Image</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  required
+                />
+              </div>
+
+              <button type="submit" className="btn-primary" disabled={uploading}>
+                {uploading ? (
+                  <div className="loading-spinner small"></div>
+                ) : (
+                  <>
+                    <Upload size={16} />
+                    Update Hero Image
+                  </>
+                )}
+              </button>
+            </form>
+          )}
+
+          {activeTab === 'about' && (
+            <form className="upload-form glass" onSubmit={async (e) => {
+              e.preventDefault();
+              if (!formData.file) return;
+              
+              setUploading(true);
+              try {
+                const imageUrl = await uploadToCloudinary(formData.file);
+                
+                const aboutCollection = collection(db, 'about');
+                const aboutSnap = await getDocs(aboutCollection);
+                
+                if (aboutSnap.empty) {
+                  await addDoc(aboutCollection, { imageUrl });
+                } else {
+                  const aboutDoc = aboutSnap.docs[0];
+                  await updateDoc(doc(db, 'about', aboutDoc.id), { imageUrl });
+                }
+                
+                alert('About image updated successfully!');
+                setFormData({ title: '', description: '', category: '', file: null, videoUrl: '', price: '', originalPrice: '', presetCount: '' });
+              } catch (error) {
+                alert('Error updating about image.');
+              } finally {
+                setUploading(false);
+              }
+            }}>
+              <h2>Update About Image</h2>
+              
+              <div className="form-group">
+                <label>About Page Image</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  required
+                />
+              </div>
+
+              <button type="submit" className="btn-primary" disabled={uploading}>
+                {uploading ? (
+                  <div className="loading-spinner small"></div>
+                ) : (
+                  <>
+                    <Upload size={16} />
+                    Update About Image
+                  </>
+                )}
+              </button>
+            </form>
+          )}
+
+          {activeTab === 'logo' && (
+            <form className="upload-form glass" onSubmit={async (e) => {
+              e.preventDefault();
+              if (!formData.file) return;
+              
+              setUploading(true);
+              try {
+                const logoUrl = await uploadToCloudinary(formData.file);
+                
+                const logoCollection = collection(db, 'logo');
+                const logoSnap = await getDocs(logoCollection);
+                
+                if (logoSnap.empty) {
+                  await addDoc(logoCollection, { logoUrl });
+                } else {
+                  const logoDoc = logoSnap.docs[0];
+                  await updateDoc(doc(db, 'logo', logoDoc.id), { logoUrl });
+                }
+                
+                alert('Logo updated successfully!');
+                setFormData({ title: '', description: '', category: '', file: null, videoUrl: '', price: '', originalPrice: '', presetCount: '' });
+              } catch (error) {
+                alert('Error updating logo.');
+              } finally {
+                setUploading(false);
+              }
+            }}>
+              <h2>Update Logo</h2>
+              
+              <div className="form-group">
+                <label>Logo Image (PNG recommended)</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  required
+                />
+              </div>
+
+              <button type="submit" className="btn-primary" disabled={uploading}>
+                {uploading ? (
+                  <div className="loading-spinner small"></div>
+                ) : (
+                  <>
+                    <Upload size={16} />
+                    Update Logo
+                  </>
+                )}
+              </button>
+            </form>
+          )}
+
+          {activeTab === 'merchandise' && (
+            <>
+            <form className="upload-form glass" onSubmit={async (e) => {
+              e.preventDefault();
+              if (!formData.file || !formData.name || !formData.price) return;
+              
+              setUploading(true);
+              try {
+                const imageUrl = await uploadToCloudinary(formData.file);
+                
+                await addDoc(collection(db, 'merchandise'), {
+                  name: formData.name,
+                  description: formData.description,
+                  category: formData.category,
+                  price: parseFloat(formData.price),
+                  originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : null,
+                  image: imageUrl,
+                  sizes: formData.sizes.split(',').map(s => s.trim()),
+                  colors: formData.colors.split(',').map(c => c.trim()),
+                  inStock: formData.inStock,
+                  rating: 5.0,
+                  reviews: 0,
+                  createdAt: serverTimestamp()
+                });
+                
+                alert('Product added successfully!');
+                setFormData({ title: '', description: '', category: '', file: null, videoUrl: '', price: '', originalPrice: '', presetCount: '', clientName: '', location: '', dateTaken: '', name: '', sizes: '', colors: '', inStock: true });
+              } catch (error) {
+                alert('Error adding product.');
+              } finally {
+                setUploading(false);
+              }
+            }}>
+              <h2>Add New Product</h2>
+              
+              <div className="form-group">
+                <label>Product Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Description</label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  rows="3"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Category</label>
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">Select Category</option>
+                  <option value="apparel">Apparel</option>
+                  <option value="accessories">Accessories</option>
+                  <option value="prints">Prints</option>
+                  <option value="equipment">Equipment</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Price (ZAR)</label>
+                <input
+                  type="number"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleInputChange}
+                  step="0.01"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Original Price (Optional)</label>
+                <input
+                  type="number"
+                  name="originalPrice"
+                  value={formData.originalPrice}
+                  onChange={handleInputChange}
+                  step="0.01"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Sizes (comma separated)</label>
+                <input
+                  type="text"
+                  name="sizes"
+                  value={formData.sizes}
+                  onChange={handleInputChange}
+                  placeholder="S, M, L, XL"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Colors (comma separated)</label>
+                <input
+                  type="text"
+                  name="colors"
+                  value={formData.colors}
+                  onChange={handleInputChange}
+                  placeholder="Black, White, Grey"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Product Image</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  required
+                />
+              </div>
+
+              <button type="submit" className="btn-primary" disabled={uploading}>
+                {uploading ? (
+                  <div className="loading-spinner small"></div>
+                ) : (
+                  <>
+                    <Plus size={16} />
+                    Add Product
+                  </>
+                )}
+              </button>
+            </form>
+            
+            <div className="content-list">
+              <h3>Merchandise Items ({merchandiseItems.length})</h3>
+              <div className="items-grid">
+                {merchandiseItems.map(item => (
+                  <div key={item.id} className="item-card">
+                    <img src={item.image} alt={item.name} />
+                    <div className="item-info">
+                      <h4>{item.name}</h4>
+                      <span className="item-category">{item.category}</span>
+                      <div className="item-price">R{item.price}</div>
+                    </div>
+                    <button 
+                      className="delete-item-btn"
+                      onClick={async () => {
+                        if (window.confirm('Delete this product?')) {
+                          await deleteDoc(doc(db, 'merchandise', item.id));
+                          fetchMerchandiseItems();
+                        }
+                      }}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+            </>
+          )}
+
+          {activeTab === 'orders' && (
+            <div className="orders-list">
+              <h2>Store Orders ({orderItems.length})</h2>
+              {orderItems.length === 0 ? (
+                <p>No orders yet.</p>
+              ) : (
+                orderItems.map((order) => (
+                  <div key={order.id} className="order-card glass">
+                    <div className="order-header">
+                      <h3>Order #{order.id.slice(-6)}</h3>
+                      <span className="order-status">{order.status}</span>
+                    </div>
+                    <div className="order-items">
+                      {order.items?.map((item, index) => (
+                        <div key={index} className="order-item">
+                          <span>{item.name} x{item.quantity}</span>
+                          <span>R{item.price * item.quantity}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="order-total">
+                      <strong>Total: R{order.total}</strong>
+                    </div>
+                    <div className="order-date">
+                      Ordered: {order.createdAt?.toDate().toLocaleDateString()}
                     </div>
                   </div>
                 ))
+              )}
+            </div>
+          )}
+
+          {activeTab === 'customers' && (
+            <div className="customers-list">
+              <h2>Store Customers ({customerItems.length})</h2>
+              {customerItems.length === 0 ? (
+                <p>No customers registered yet.</p>
+              ) : (
+                <div className="customers-grid">
+                  {customerItems.map((customer) => (
+                    <div key={customer.id} className="customer-card glass">
+                      <div className="customer-header">
+                        <h3>{customer.firstName} {customer.lastName}</h3>
+                        <span className="customer-status">{customer.status}</span>
+                      </div>
+                      <div className="customer-info">
+                        <p><strong>Email:</strong> {customer.email}</p>
+                        <p><strong>Phone:</strong> {customer.phone}</p>
+                        <p><strong>Address:</strong> {customer.address}, {customer.city}, {customer.province} {customer.postalCode}</p>
+                        <p><strong>Newsletter:</strong> {customer.newsletter ? 'Subscribed' : 'Not subscribed'}</p>
+                      </div>
+                      <div className="customer-date">
+                        Joined: {customer.createdAt?.toDate().toLocaleDateString()}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           )}

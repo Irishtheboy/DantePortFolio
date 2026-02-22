@@ -1,0 +1,9 @@
+.booking-page {
+  min-height: 100vh;
+  padding-top: 80px; /* Account for fixed header */
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+[data-theme="dark"] .booking-page {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+}

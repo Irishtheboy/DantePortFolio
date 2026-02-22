@@ -10,6 +10,7 @@ const About = () => {
     photos: 0,
     videos: 0
   });
+  const [aboutImage, setAboutImage] = useState('');
 
   const skills = [
     'Portrait Photography',
@@ -17,23 +18,27 @@ const About = () => {
     'Event Coverage',
     'Video Production',
     'Video Editing',
-    'Drone Photography',
-    'Studio Lighting',
     'Post-Processing'
   ];
 
   useEffect(() => {
     const fetchCounts = async () => {
       try {
-        const [gallerySnapshot, videosSnapshot] = await Promise.all([
+        const [gallerySnapshot, videosSnapshot, aboutSnapshot] = await Promise.all([
           getDocs(collection(db, 'gallery')),
-          getDocs(collection(db, 'videos'))
+          getDocs(collection(db, 'videos')),
+          getDocs(collection(db, 'about'))
         ]);
         
         setCounts({
           photos: gallerySnapshot.size,
           videos: videosSnapshot.size
         });
+        
+        if (!aboutSnapshot.empty) {
+          const aboutData = aboutSnapshot.docs[0].data();
+          setAboutImage(aboutData.imageUrl);
+        }
       } catch (error) {
         console.error('Error fetching counts:', error);
       }
@@ -64,21 +69,17 @@ const About = () => {
               </p>
               <div className="about-description">
                 <p>
-                  With over 5 years of experience in photography and videography, I specialize in 
-                  creating compelling visual narratives that resonate with audiences. My work spans 
-                  across weddings, portraits, corporate events, and creative projects.
-                </p>
-                <p>
-                  I believe that every moment has a story to tell, and my mission is to capture 
-                  those stories in their most authentic and beautiful form. Whether it's the joy 
-                  of a wedding day, the professionalism of a corporate event, or the intimacy 
-                  of a portrait session, I bring creativity and technical expertise to every project.
+               Five years deep in the game, my visual language was forged in the streets with the Broke Boys Collective. That era taught me that you don’t need a budget to create art—you need vision, timing, and the hunger to capture the shot that everyone else misses.
+
+Today, I bring that same indie energy and technical mastery to every project. Whether I'm documenting the raw emotion of a wedding, the fast-paced rhythm of a corporate event, or a stylized portrait session, I don’t just record what it looks like—I capture what it feels like.
+
+I specialize in visual narratives that bleed authenticity. My work sits at the intersection of technical precision and street-level edge. If you are looking for traditional, posed perfection, look elsewhere. If you want the story told with grit, texture, and soul, let’s work.
                 </p>
               </div>
             </div>
             <div className="about-image">
               <img 
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=600&fit=crop" 
+                src={aboutImage} 
                 alt="DANTEKILLSTORM" 
               />
             </div>
@@ -145,9 +146,7 @@ const About = () => {
           <div className="philosophy-content glass">
             <h2>My Philosophy</h2>
             <blockquote>
-              "Photography is not just about capturing what you see, but about revealing 
-              what you feel. Every frame tells a story, every moment holds emotion, 
-              and every project is an opportunity to create something extraordinary."
+              "I believe the best images should feel lived-in, not staged. For me, the magic isn't in perfect poses, but in the texture of the moment—the grain, the shadows, and the unscripted energy. I don’t force the shot; I wait for the split-second when the vibe is authentic and the real story unfolds. It’s about creating visuals that don't just look good, but actually breathe."
             </blockquote>
             <cite>- DANTEKILLSTORM</cite>
           </div>
