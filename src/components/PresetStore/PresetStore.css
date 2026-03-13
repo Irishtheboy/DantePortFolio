@@ -21,6 +21,27 @@
   gap: 2.5rem;
 }
 
+.preset-empty-state {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  border: 1px dashed #d9d9d9;
+  border-radius: 12px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.preset-empty-state h3 {
+  margin: 0 0 0.75rem 0;
+  color: var(--color-black);
+  font-size: 1.4rem;
+}
+
+.preset-empty-state p {
+  margin: 0;
+  color: var(--color-text-gray);
+  line-height: 1.6;
+}
+
 .preset-card {
   background: white;
   border-radius: 16px;

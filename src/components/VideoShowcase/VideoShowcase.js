@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { collection, getDocs, orderBy, query, deleteDoc, doc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -194,9 +195,9 @@ const VideoShowcase = () => {
         >
           <h3>Ready to create something amazing?</h3>
           <p>Let's bring your vision to life with professional video production</p>
-          <a href="/booking" className="btn-primary">
+          <Link to="/luts" className="btn-primary">
             Start Your Project
-          </a>
+          </Link>
         </motion.div>
 
         {selectedVideo && (

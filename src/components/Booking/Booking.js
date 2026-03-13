@@ -233,10 +233,6 @@ Please let me know your availability and pricing. Thanks!`;
                   <service.icon size={24} className="service-icon" />
                   <h4>{service.name}</h4>
                   <p className="service-description">{service.description}</p>
-                  <div className="service-duration">
-                    <Clock size={14} />
-                    {service.duration > 0 ? `${service.duration} hour${service.duration > 1 ? 's' : ''}` : 'Flexible timing'}
-                  </div>
                 </div>
               ))}
             </div>

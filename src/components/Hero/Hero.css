@@ -207,7 +207,6 @@
 }
 
 @media (max-width: 768px) {
-<<<<<<< HEAD
   .hero {
     grid-template-columns: 1fr;
     min-height: 70vh;
@@ -310,10 +309,6 @@
   
   .stat {
     font-size: 0.9rem;
-=======
-  .hero-content {
-    padding: 0 1rem;
->>>>>>> c47ae4320967da3c5c77d8e881acee84f6ac436a
   }
   
   .hero-title {

@@ -31,47 +31,7 @@ const PresetStore = () => {
       setPresets(presetData);
     } catch (error) {
       console.error('Error fetching presets:', error);
-      setPresets([
-        {
-          id: 1,
-          title: 'Moody Portrait Pack',
-          description: 'Dark and dramatic presets perfect for portrait photography',
-          price: 25,
-          originalPrice: 35,
-          rating: 4.8,
-          downloads: 1250,
-          preview: '',
-          category: 'Portrait',
-          fileSize: '2.5 MB',
-          presetCount: 12
-        },
-        {
-          id: 2,
-          title: 'Wedding Elegance',
-          description: 'Soft and romantic presets for wedding photography',
-          price: 30,
-          originalPrice: 40,
-          rating: 4.9,
-          downloads: 890,
-          preview: '',
-          category: 'Wedding',
-          fileSize: '3.1 MB',
-          presetCount: 15
-        },
-        {
-          id: 3,
-          title: 'Urban Street Vibes',
-          description: 'Gritty and bold presets for street photography',
-          price: 20,
-          originalPrice: 28,
-          rating: 4.7,
-          downloads: 2100,
-          preview: '',
-          category: 'Street',
-          fileSize: '1.8 MB',
-          presetCount: 10
-        }
-      ]);
+      setPresets([]);
     } finally {
       setLoading(false);
     }
@@ -119,76 +79,83 @@ const PresetStore = () => {
           </div>
         </motion.div>
 
-        <div className="preset-grid">
-          {presets.map((preset, index) => (
-            <motion.div
-              key={preset.id}
-              className="preset-card"
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -10 }}
-            >
-              <div className="preset-image">
-                <img src={preset.preview} alt={preset.title} />
-                <div className="preset-overlay">
-                  <button 
-                    className="preview-btn"
-                    onClick={() => setSelectedPreset(preset)}
-                  >
-                    <Eye size={20} />
-                    Preview
-                  </button>
-                </div>
-                <div className="preset-badge">
-                  {preset.originalPrice > preset.price && (
-                    <span className="discount">
-                      -{Math.round(((preset.originalPrice - preset.price) / preset.originalPrice) * 100)}%
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <div className="preset-content">
-                <div className="preset-category">{preset.category}</div>
-                <h3 className="preset-title">{preset.title}</h3>
-                <p className="preset-description">{preset.description}</p>
-                
-                <div className="preset-stats">
-                  <div className="stat">
-                    <Star size={14} fill="currentColor" />
-                    <span>{preset.rating}</span>
+        {presets.length === 0 ? (
+          <div className="preset-empty-state">
+            <h3>No LUT packs uploaded yet</h3>
+            <p>This page is ready. Upload your LUT packs from the admin presets tab and they will appear here.</p>
+          </div>
+        ) : (
+          <div className="preset-grid">
+            {presets.map((preset, index) => (
+              <motion.div
+                key={preset.id}
+                className="preset-card"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -10 }}
+              >
+                <div className="preset-image">
+                  <img src={preset.preview} alt={preset.title} />
+                  <div className="preset-overlay">
+                    <button
+                      className="preview-btn"
+                      onClick={() => setSelectedPreset(preset)}
+                    >
+                      <Eye size={20} />
+                      Preview
+                    </button>
                   </div>
-                  <div className="stat">
-                    <Download size={14} />
-                    <span>{preset.downloads}</span>
-                  </div>
-                  <div className="stat">
-                    <Package size={14} />
-                    <span>{preset.presetCount} presets</span>
-                  </div>
-                </div>
-
-                <div className="preset-pricing">
-                  <div className="price">
-                    <span className="current-price">{formatPrice(preset.price, userCurrency)}</span>
+                  <div className="preset-badge">
                     {preset.originalPrice > preset.price && (
-                      <span className="original-price">{formatPrice(preset.originalPrice, userCurrency)}</span>
+                      <span className="discount">
+                        -{Math.round(((preset.originalPrice - preset.price) / preset.originalPrice) * 100)}%
+                      </span>
                     )}
                   </div>
-                  <button 
-                    className="buy-btn"
-                    onClick={() => handlePurchase(preset)}
-                  >
-                    <ShoppingCart size={16} />
-                    Buy Now
-                  </button>
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+
+                <div className="preset-content">
+                  <div className="preset-category">{preset.category}</div>
+                  <h3 className="preset-title">{preset.title}</h3>
+                  <p className="preset-description">{preset.description}</p>
+
+                  <div className="preset-stats">
+                    <div className="stat">
+                      <Star size={14} fill="currentColor" />
+                      <span>{preset.rating}</span>
+                    </div>
+                    <div className="stat">
+                      <Download size={14} />
+                      <span>{preset.downloads}</span>
+                    </div>
+                    <div className="stat">
+                      <Package size={14} />
+                      <span>{preset.presetCount} presets</span>
+                    </div>
+                  </div>
+
+                  <div className="preset-pricing">
+                    <div className="price">
+                      <span className="current-price">{formatPrice(preset.price, userCurrency)}</span>
+                      {preset.originalPrice > preset.price && (
+                        <span className="original-price">{formatPrice(preset.originalPrice, userCurrency)}</span>
+                      )}
+                    </div>
+                    <button
+                      className="buy-btn"
+                      onClick={() => handlePurchase(preset)}
+                    >
+                      <ShoppingCart size={16} />
+                      Buy Now
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
 
         {selectedPreset && (
           <div className="preset-modal" onClick={() => setSelectedPreset(null)}>

@@ -479,21 +479,17 @@
   }
   
   .gallery-content {
-    padding: 0;
-    order: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 400px;
+    display: none;
   }
   
   .gallery-visual {
     order: 1;
-    height: 50vh;
+    height: auto;
+    min-height: auto;
     width: 100%;
     display: flex;
     justify-content: center;
+    padding-top: 0;
   }
   
   .gallery-header {
@@ -547,7 +543,7 @@
   }
   
   .gallery-grid-container {
-    max-width: 300px;
+    max-width: 100%;
   }
   
   .gallery-grid {

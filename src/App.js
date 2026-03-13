@@ -12,6 +12,7 @@ import Home from './pages/Home/Home';
 import Portfolio from './pages/Portfolio/Portfolio';
 import BookingPage from './pages/BookingPage/BookingPage';
 import MerchStore from './components/MerchStore/MerchStore';
+import PresetStore from './components/PresetStore/PresetStore';
 import Admin from './pages/Admin/Admin';
 import Footer from './components/Footer/Footer';
 import './App.css';
@@ -51,6 +52,7 @@ function App() {
                 <Route path="/portfolio" element={<Portfolio />} />
                 <Route path="/booking" element={<BookingPage />} />
                 <Route path="/store" element={<MerchStore />} />
+                <Route path="/luts" element={<PresetStore />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="*" element={<Entry />} />
               </Routes>

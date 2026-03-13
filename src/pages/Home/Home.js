@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { db } from '../../firebase';
-import { Instagram, Twitter } from 'lucide-react';
 import './Home.css';
 
 const Home = () => {
@@ -191,14 +190,6 @@ const Home = () => {
       <div className="side-nav right">
         <div className="side-nav-content">
           <span className="side-nav-text">NEXT</span>
-          <div className="social-links">
-            <button className="social-link" aria-label="Instagram">
-              <Instagram size={16} />
-            </button>
-            <button className="social-link" aria-label="Twitter">
-              <Twitter size={16} />
-            </button>
-          </div>
         </div>
       </div>
     </div>

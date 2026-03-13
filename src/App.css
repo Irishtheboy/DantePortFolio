@@ -196,8 +196,6 @@ a:focus {
 }
 
 /* Mobile-first responsive design */
-<<<<<<< HEAD
-=======
 @media (max-width: 768px) {
   :root {
     --spacing-container: 1rem;
@@ -237,7 +235,6 @@ a:focus {
   }
 }
 
->>>>>>> c47ae4320967da3c5c77d8e881acee84f6ac436a
 @media (max-width: 480px) {
   .section-title {
     font-size: 1.8rem !important;
@@ -249,15 +246,6 @@ a:focus {
     line-height: 1.4;
   }
   
-<<<<<<< HEAD
-  .btn-primary,
-  .btn-secondary {
-    padding: 0.875rem 1.5rem;
-    font-size: 0.9rem;
-  }
-  
-=======
->>>>>>> c47ae4320967da3c5c77d8e881acee84f6ac436a
   /* Ensure touch targets are at least 44px */
   button,
   .action-btn,
@@ -281,13 +269,9 @@ a:focus {
   .gallery-container,
   .video-container,
   .preset-container,
-<<<<<<< HEAD
-  .booking-container {
-=======
   .booking-container,
   .contact-container,
   .about-container {
->>>>>>> c47ae4320967da3c5c77d8e881acee84f6ac436a
     padding: 0 0.75rem !important;
   }
 }
