@@ -1,7 +1,7 @@
 {
   "name": "killydidshootit-studio",
   "version": "1.0.0",
-  "homepage": "https://YOUR_GITHUB_USERNAME.github.io/dantekillstorm-portfolio",
+  "homepage": ".",
   "description": "Modern portfolio website for photographer and videographer DANTEKILLSTORM",
   "author": "DANTEKILLSTORM",
   "keywords": ["photography", "videography", "portfolio", "react", "firebase"],
