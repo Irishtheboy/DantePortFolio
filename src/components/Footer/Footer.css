@@ -75,6 +75,16 @@
   color: #999 !important;
 }
 
+.developer-credit a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.developer-credit a:hover {
+  color: var(--color-mustard, #ffc20e);
+}
+
 /* Dark Mode */
 [data-theme="dark"] .footer {
   background: #1a1a1a;

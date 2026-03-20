@@ -22,7 +22,7 @@ const Footer = () => {
         
         <div className="footer-bottom">
           <p>© 2026 KillyDidShootIt. Made with <Heart size={14} fill="currentColor" /> for visual storytelling.</p>
-          <p className="developer-credit">Developed by <strong>Franco Lukhele</strong>Under <strong>AlchemyStudio</strong></p>
+          <p className="developer-credit">Developed by <a href="https://alchemy-studio-azure.vercel.app/" target="_blank" rel="noopener noreferrer"><strong>Franco Lukhele</strong> under AlchemyStudio</a></p>
         </div>
       </div>
     </footer>

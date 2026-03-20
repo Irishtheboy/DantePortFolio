@@ -471,24 +471,23 @@
   .gallery-page {
     grid-template-columns: 1fr;
     padding: 1rem;
-    text-align: center;
-    justify-items: center;
-    align-items: center;
-    gap: 2rem;
     padding-top: 80px;
+    gap: 1.5rem;
   }
-  
+
   .gallery-content {
-    display: none;
-  }
-  
-  .gallery-visual {
+    position: static;
+    padding-right: 0;
+    padding-top: 0;
+    text-align: center;
     order: 1;
+  }
+
+  .gallery-visual {
+    order: 2;
     height: auto;
     min-height: auto;
     width: 100%;
-    display: flex;
-    justify-content: center;
     padding-top: 0;
   }
   
@@ -581,8 +580,7 @@
   
   .gallery-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.3rem;
-    max-height: 300px;
+    gap: 0.5rem;
   }
   
   .lightbox-nav.prev,
