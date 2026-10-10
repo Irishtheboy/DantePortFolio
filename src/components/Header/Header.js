@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Camera, Moon, Sun, Maximize2, Grid3X3 } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, Camera, Moon, Sun } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../../contexts/ThemeContext';
 import './Header.css';
@@ -10,6 +10,7 @@ const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const { isDark, toggleTheme } = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,13 +21,25 @@ const Header = () => {
   }, []);
 
   const navItems = [
-    { path: '/', label: 'HOME' },
-    { path: '/store', label: 'PRINTS' },
-    { path: '/portfolio', label: 'GALLERY' },
-    
-    { path: '/booking', label: 'BOOKING' },
-    
+    { path: '/', label: 'HOME', sectionId: 'top' },
+    { path: '/', label: 'WORK', sectionId: 'work' },
+    { path: '/', label: 'ABOUT', sectionId: 'about' },
+    { path: '/', label: 'CONTACT', sectionId: 'contact' },
+    { path: '/store', label: 'PRINTS' }
   ];
+
+  const handleNavClick = (event, item) => {
+    setIsOpen(false);
+    if (!item.sectionId) return;
+
+    event.preventDefault();
+    if (location.pathname !== '/') {
+      navigate('/', { state: { scrollTo: item.sectionId } });
+      return;
+    }
+
+    document.getElementById(item.sectionId)?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <motion.header 
@@ -45,10 +58,10 @@ const Header = () => {
         <nav className={`nav ${isOpen ? 'nav-open' : ''}`}>
           {navItems.map((item) => (
             <Link
-              key={item.path}
+              key={item.label}
               to={item.path}
-              className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
-              onClick={() => setIsOpen(false)}
+              className={`nav-link ${location.pathname === item.path && item.sectionId === 'top' ? 'active' : ''}`}
+              onClick={(event) => handleNavClick(event, item)}
             >
               {item.label}
             </Link>
@@ -56,13 +69,7 @@ const Header = () => {
         </nav>
 
         <div className="header-actions">
-          <button className="action-btn" aria-label="Fullscreen">
-            <Maximize2 size={18} />
-          </button>
-          <button className="action-btn" aria-label="Grid View">
-            <Grid3X3 size={18} />
-          </button>
-          <button className="theme-toggle" onClick={toggleTheme}>
+          <button className="theme-toggle" onClick={toggleTheme} aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}>
             {isDark ? <Sun size={18} /> : <Moon size={18} />}
           </button>
         </div>
